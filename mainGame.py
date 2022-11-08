@@ -125,6 +125,14 @@ class handTracker:
         with open('handsigns.pkl','rb') as f:
             self.gestNames=pickle.load(f)
             self.knownGestures=pickle.load(f)
+    
+    def findDistances(self,handData):
+        distMatrix=np.zeros([len(handData),len(handData)],dtype='float')
+        palmSize=((handData[0][0]-handData[9][0])**2+(handData[0][1]-handData[9][1])**2)**(1./2.)
+        for row in range(0,len(handData)):
+            for column in range(0,len(handData)):
+                distMatrix[row][column]=(((handData[row][0]-handData[column][0])**2+(handData[row][1]-handData[column][1])**2)**(1./2.))/palmSize
+        return distMatrix
             
     def Marks(self,frame):
             myHands=[]
@@ -138,13 +146,6 @@ class handTracker:
                     myHands.append(myHand)
             return myHands
         
-    def findError(self,gestureMatrix,unknownMatrix,keyPoints):
-        error=0
-        for row in keyPoints:
-            for column in keyPoints:
-                error=error+abs(gestureMatrix[row][column]-unknownMatrix[row][column])
-        return error
-    
     def findGesture(self,unknownGesture,knownGestures,keyPoints,gestNames,tol):
         errorArray=[]
         for i in range(0,len(gestNames),1):
@@ -162,13 +163,12 @@ class handTracker:
             gesture='Unknown'
         return gesture
     
-    def findDistances(self,handData):
-        distMatrix=np.zeros([len(handData),len(handData)],dtype='float')
-        palmSize=((handData[0][0]-handData[9][0])**2+(handData[0][1]-handData[9][1])**2)**(1./2.)
-        for row in range(0,len(handData)):
-            for column in range(0,len(handData)):
-                distMatrix[row][column]=(((handData[row][0]-handData[column][0])**2+(handData[row][1]-handData[column][1])**2)**(1./2.))/palmSize
-        return distMatrix
+    def findError(self,gestureMatrix,unknownMatrix,keyPoints):
+        error=0
+        for row in keyPoints:
+            for column in keyPoints:
+                error=error+abs(gestureMatrix[row][column]-unknownMatrix[row][column])
+        return error
     
     def run(self):
         global handsigns
@@ -181,7 +181,6 @@ class handTracker:
                 myGesture=self.findGesture(unknownGesture,self.knownGestures,self.keyPoints,self.gestNames,10)
                 handsigns.add(myGesture)
 
-        
 ##############################################################Main Game########################################################################
 handsigns = set() #set of handsigns
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
