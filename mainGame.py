@@ -179,10 +179,24 @@ class handTracker:
             if handData!=[]:
                 unknownGesture=self.findDistances(handData[0])
                 myGesture=self.findGesture(unknownGesture,self.knownGestures,self.keyPoints,self.gestNames,10)
-                handsigns.add(myGesture)
-
+                if jutsu_perform == True and (myGesture != 'Unknown') and len(handsigns) < 4 and (myGesture not in handsigns):
+                    print(myGesture)
+                    handsigns.append(myGesture)
+class setCheck:
+    def __init__(self):
+        self.fire_style = ["three","four","one","five"]
+        self.chidori = ["two","four","one","five"]
+        self.karin = [] #define later
+    
+    def compareHandSign(self):
+        if handsigns[0] == "three" and handsigns[1] == "four" and handsigns[2] == "one" and handsigns[3] == "two":
+            print("Hello")
+            return 1
+        return -1
+        
+        
 ##############################################################Main Game########################################################################
-handsigns = set() #set of handsigns
+handsigns = [] #set of handsigns
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 # width, height = screen.get_size()
 width = 800
@@ -200,6 +214,7 @@ down_move = False
 fire_flip = False
 fire_shoot_stance = False
 fire_shoot_stance_dur = 0
+jutsu_perform = False
 
 fire_ball = pygame.image.load('fire.png').convert_alpha()
 fire_ball_flip = pygame.transform.flip(fire_ball,True,False)
@@ -212,6 +227,9 @@ RED = (255, 0, 0)
 def draw_bg():  #temp
     screen.fill(BG)
 
+#set comparator
+handSignTracker = setCheck()
+
 #camera on
 handtrack = handTracker()
 my_thread = threading.Thread(target=handtrack.run,daemon=True)
@@ -222,13 +240,13 @@ run = True
 while run:
     clock.tick(60)
     draw_bg() #temp
+    
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
     sasuke.draw_character()
 
     fire_sprite_group.update()
     fire_sprite_group.draw(screen)
-    
-    #update player actions
     if sasuke.alive:
         #shoot bullets
         if fire_shoot_stance:
@@ -239,12 +257,26 @@ while run:
             fire_shoot_stance_dur += 1
             if fire_shoot:
                 sasuke.fireJutsu()
+                fire_shoot = False
+                jutsu_perform = False          #set false to disable hand sign detection. User has to press c every time to perform a jutsu
+                handsigns.clear()              #clear handsigns list to prepare for next jutsu
         elif left_move or right_move or up_move or down_move:
             sasuke.action_updater(1)
         else:
             sasuke.action_updater(0)
         sasuke.character_movements(left_move, right_move)
 
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$hand signs detection controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    if len(handsigns) == 4 and jutsu_perform == True:                 
+        if handSignTracker.compareHandSign() == 1:
+            fire_shoot_stance = True
+            fire_shoot = True
+        elif handSignTracker.compareHandSign() == 2:
+            print("Place Holder")
+        else: 
+            handsigns.clear()          #the user performs wrong handsigns, so clear handsigns list
+                
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$keyboard detection$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -259,8 +291,6 @@ while run:
                 left_move = False
             if event.key == pygame.K_d:
                 right_move = False
-            if event.key == pygame.K_SPACE: #will be replaced by hand detection
-                fire_shoot = False
             
         #keys pushed
         if event.type == pygame.KEYDOWN:
@@ -272,10 +302,14 @@ while run:
                 left_move = True
             if event.key == pygame.K_d:
                 right_move = True
-            if event.key == pygame.K_SPACE: #will be replaced by hand detection
-                fire_shoot = True
-                fire_shoot_stance = True
+            if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
+                if jutsu_perform == True:
+                    jutsu_perform = False
+                    handsigns.clear()
+                else: 
+                    jutsu_perform = True
 
+    #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
 print(handsigns)
 pygame.quit()
