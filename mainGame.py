@@ -189,7 +189,7 @@ class setCheck:
         self.karin = [] #define later
     
     def compareHandSign(self):
-        if handsigns[0] == "three" and handsigns[1] == "four" and handsigns[2] == "one" and handsigns[3] == "two":
+        if handsigns[0] == "three" and handsigns[1] == "four" and handsigns[2] == "one" and handsigns[3] == "five":
             print("Hello")
             return 1
         return -1
