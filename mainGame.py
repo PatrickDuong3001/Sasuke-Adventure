@@ -5,110 +5,9 @@ import cv2
 import numpy as np
 import pickle
 import threading
-import math
-
-class character(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.alive = True
-        self.health = 100
-        self.max_health = self.health
-        self.update_time = pygame.time.get_ticks()
-        self.cooldown_jutsu_duration = 0
-        self.action_type = 0
-        self.character_direct = 1
-        self.flip_character = False
-        self.f_ind = 0    
-        self.animation_list = []    
-        animation_types = ["stand", "run","fire"]
-        
-        for animation in animation_types:
-            temp = []
-            for i in range(len(os.listdir(f'animation/{animation}'))):
-                img = pygame.image.load(f'animation/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(2*img.get_width()), int(2*img.get_height())))
-                temp.append(img)
-            self.animation_list.append(temp)
-        self.image = self.animation_list[self.action_type][self.f_ind]
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-
-    def update(self):
-        self.animate_updater()
-        #self.check_alive()
-        #update cooldown
-        if self.cooldown_jutsu_duration > 0:
-            self.cooldown_jutsu_duration -= 1
-            
-    def animate_updater(self):
-        #based on current frame, updating image
-        self.image = self.animation_list[self.action_type][self.f_ind]
-        if pygame.time.get_ticks() - self.update_time > 70:
-            self.update_time = pygame.time.get_ticks()
-            self.f_ind += 1
-        if self.f_ind >= len(self.animation_list[self.action_type]):
-            if self.action_type == 3:
-                self.f_ind = len(self.animation_list[self.action_type]) - 1
-            else:
-                self.f_ind = 0
-
-    def action_updater(self, action):
-        #check if the new action is different to the previous one
-        if action != self.action_type:
-            self.action_type = action
-            #update the animation settings
-            self.f_ind = 0
-            self.update_time = pygame.time.get_ticks()
-            
-    def fireJutsu(self):
-        if self.cooldown_jutsu_duration == 0:
-            self.cooldown_jutsu_duration = 30
-            fire = FireJutsu(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx, self.rect.centery-10, self.character_direct)
-            fire_sprite_group.add(fire)
-
-    def character_movements(self, left_move, right_move):
-        dx = 0
-        dy = 0
-        global fire_flip
-        if right_move:
-            if self.rect.x <= width - 80:
-                dx = 5
-            self.flip_character = False
-            fire_flip = False
-            self.character_direct = 1
-        if left_move:
-            if self.rect.x >= 1:
-                dx = -5
-            fire_flip = True
-            self.flip_character = True
-            self.character_direct = -1
-        if down_move:
-            if self.rect.y <= height - 100:
-                dy = 3
-        if up_move:
-            if self.rect.y >= 10:
-                dy = -3        
-        self.rect.y += dy
-        self.rect.x += dx
-    
-    def draw_character(self):
-        screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
-
-class FireJutsu(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction):
-        pygame.sprite.Sprite.__init__(self)
-        if fire_flip:
-            self.image = fire_ball_flip
-        else:
-            self.image = fire_ball
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.character_direct = direction
-
-    def update(self):
-        self.rect.x += (self.character_direct * 5)
-        if self.rect.right < 0 or self.rect.left > width:
-            self.kill()
+from character import character 
+from enemies import enemies
+from handSignChecker import handSignChecker
 
 class handTracker:
     import mediapipe as mp
@@ -180,81 +79,7 @@ class handTracker:
                 myGesture=self.findGesture(unknownGesture,self.knownGestures,self.keyPoints,self.gestNames,10)
                 if jutsu_perform == True and (myGesture != 'Unknown') and len(handsigns) < 4 and (myGesture not in handsigns):
                     print(myGesture)
-                    handsigns.append(myGesture)
-class setCheck:
-    def __init__(self):
-        self.fire_style = ["three","four","one","five"]
-        self.chidori = ["two","four","one","five"]
-        self.karin = [] #define later
-    
-    def compareHandSign(self):
-        if handsigns[0] == "three" and handsigns[1] == "four" and handsigns[2] == "one" and handsigns[3] == "five":
-            print("Hello")
-            return 1
-        return -1
-
-class BasicEnemy(pygame.sprite.Sprite): 
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.alive = True
-        self.health = 100
-        self.max_health = self.health
-        self.update_time = pygame.time.get_ticks()
-        self.action_type = 0
-        self.flip_character = False
-        self.f_ind = 0    
-        self.animation_list = []    
-        animation_types = ["basicEnemyRun"]
-        
-        for animation in animation_types:
-            temp = []
-            for i in range(len(os.listdir(f'animation/{animation}'))):
-                img = pygame.image.load(f'animation/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(1.2*img.get_width()), int(1.2*img.get_height())))
-                temp.append(img)
-            self.animation_list.append(temp)
-        self.image = self.animation_list[self.action_type][self.f_ind]
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-    
-    def animate_updater(self):
-        #based on current frame, updating image
-        self.image = self.animation_list[self.action_type][self.f_ind]
-        if pygame.time.get_ticks() - self.update_time > 100:
-            self.update_time = pygame.time.get_ticks()
-            self.f_ind += 1
-        if self.f_ind >= len(self.animation_list[self.action_type]):
-            if self.action_type == 3:
-                self.f_ind = len(self.animation_list[self.action_type]) - 1
-            else:
-                self.f_ind = 0
-    
-    def action_updater(self, action):
-        #check if the new action is different to the previous one
-        if action != self.action_type:
-            self.action_type = action
-            #update the animation settings
-            self.f_ind = 0
-            self.update_time = pygame.time.get_ticks()    
-    
-    def move_towards_player(self, player):
-        # Find direction vector (dx, dy) between enemy and player.
-        dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
-        
-        if player.rect.x - self.rect.x < 0:
-            self.flip_character = True
-        else: 
-            self.flip_character = False
-        
-        dist = math.hypot(dx, dy)
-        dx, dy = dx / dist, dy / dist  # Normalize.
-        # Move along this normalized vector towards the player at current speed.
-        self.rect.x += dx * basicEnemySpeed
-        self.rect.y += dy * basicEnemySpeed
-    
-    def draw_character(self):
-        screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
-        
+                    handsigns.append(myGesture)        
 ##############################################################Main Game########################################################################
 handsigns = [] #set of handsigns
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -271,17 +96,13 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
-fire_flip = False
 fire_shoot_stance = False
 fire_shoot_stance_dur = 0
 jutsu_perform = False
-basicEnemySpeed = 3
+enemySpeed = 3
 
-fire_ball = pygame.image.load('fire.png').convert_alpha()
-fire_ball_flip = pygame.transform.flip(fire_ball,True,False)
-fire_sprite_group = pygame.sprite.Group()
-sasuke = character(50, 200)
-basicEnemy_1 = BasicEnemy(500,200)
+sasuke = character(50, 200, width, height, screen)
+basicEnemy_1 = enemies(500,200,width,height,screen)
 
 BG = (144, 201, 120)
 RED = (255, 0, 0)
@@ -290,7 +111,7 @@ def draw_bg():  #temp
     screen.fill(BG)
 
 #set comparator
-handSignTracker = setCheck()
+handSignTracker = handSignChecker()
 
 #camera on
 handtrack = handTracker()
@@ -307,13 +128,13 @@ while run:
     sasuke.update()
     sasuke.draw_character()
     
-    basicEnemy_1.animate_updater()
-    basicEnemy_1.move_towards_player(sasuke)
-    basicEnemy_1.draw_character()
+    # basicEnemy_1.animate_updater()
+    # basicEnemy_1.move_towards_player(sasuke,enemySpeed)
+    # basicEnemy_1.draw_character()
 
-    fire_sprite_group.update()
-    fire_sprite_group.draw(screen)
-    if sasuke.alive:
+    sasuke.fire_sprite_update()
+    
+    if sasuke.checkAlive:
         #shoot bullets
         if fire_shoot_stance:
             if fire_shoot_stance_dur == 20:
@@ -330,14 +151,14 @@ while run:
             sasuke.action_updater(1)
         else:
             sasuke.action_updater(0)
-        sasuke.character_movements(left_move, right_move)
+        sasuke.character_movements(left_move, right_move,down_move,up_move)
 
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$hand signs detection controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if len(handsigns) == 4 and jutsu_perform == True:                 
-        if handSignTracker.compareHandSign() == 1:
+        if handSignTracker.compareHandSign(handsigns) == 1:
             fire_shoot_stance = True
             fire_shoot = True
-        elif handSignTracker.compareHandSign() == 2:
+        elif handSignTracker.compareHandSign(handsigns) == 2:
             print("Place Holder")
         else: 
             handsigns.clear()          #the user performs wrong handsigns, so clear handsigns list
