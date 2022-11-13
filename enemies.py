@@ -4,26 +4,26 @@ import os
 import math
 
 class enemies(pygame.sprite.Sprite): 
-    def __init__(self, x, y, width, height, screen):
+    def __init__(self, x, y, width, height, screen, enemyType):
         pygame.sprite.Sprite.__init__(self)
         self.width = width 
         self.height = height
         self.screen = screen
+        self.enemyType = enemyType
         
         self.alive = True
         self.health = 100
-        self.max_health = self.health
         self.update_time = pygame.time.get_ticks()
         self.action_type = 0
         self.flip_character = False
         self.f_ind = 0    
         self.animation_list = []    
-        animation_types = ["basicEnemyRun"]
+        animation_types = ["run", "attack"]
         
         for animation in animation_types:
             temp = []
-            for i in range(len(os.listdir(f'animation/{animation}'))):
-                img = pygame.image.load(f'animation/{animation}/{i}.png').convert_alpha()
+            for i in range(len(os.listdir(f'animation/enemy{self.enemyType}/{animation}'))):
+                img = pygame.image.load(f'animation/enemy{self.enemyType}/{animation}/{i}.png').convert_alpha()
                 img = pygame.transform.scale(img, (int(1.2*img.get_width()), int(1.2*img.get_height())))
                 temp.append(img)
             self.animation_list.append(temp)
@@ -61,10 +61,18 @@ class enemies(pygame.sprite.Sprite):
             self.flip_character = False
         
         dist = math.hypot(dx, dy)
-        dx, dy = dx / dist, dy / dist  # Normalize.
+        if dist != 0:
+            dx, dy = dx / dist, dy / dist  # Normalize.
         # Move along this normalized vector towards the player at current speed.
-        self.rect.x += dx * speed
-        self.rect.y += dy * speed
+        if dist >= 35:
+            self.action_updater(0)
+            self.rect.x += dx * speed
+            self.rect.y += dy * speed
+        else:
+            self.action_updater(1)
+            
+    def enemyTakeDamage(self):
+        self.health -= 50
     
     def draw_character(self):
         self.screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
