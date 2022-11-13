@@ -22,6 +22,7 @@ class character(pygame.sprite.Sprite):
         animation_types = ["stand", "run","fire"]
         
         self.fire_flip = False
+        self.fire = None
         self.fire_sprite_group = pygame.sprite.Group()
         
         for animation in animation_types:
@@ -65,8 +66,8 @@ class character(pygame.sprite.Sprite):
     def fireJutsu(self):
         if self.cooldown_jutsu_duration == 0:
             self.cooldown_jutsu_duration = 30
-            fire = FireJutsu(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx, self.rect.centery-10, self.character_direct,self.fire_flip,self.width)
-            self.fire_sprite_group.add(fire)
+            self.fire = FireJutsu(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx, self.rect.centery-10, self.character_direct,self.fire_flip,self.width)
+            self.fire_sprite_group.add(self.fire)
 
     def character_movements(self, left_move, right_move, down_move, up_move):
         dx = 0
@@ -101,3 +102,15 @@ class character(pygame.sprite.Sprite):
     
     def checkAlive(self): 
         return self.alive
+    
+    def getFireSprite(self):       #return the fire ball sprite. Used for collision detection with enemies
+        return self.fire_sprite_group
+
+    def getFireX(self):            #return the x coordinate of the fire ball for the main file
+        return self.fire.getFireX()
+        
+    def getFireY(self):            #return the y coordinate of the fire ball for the main file
+        return self.fire.getFireY()
+    
+    def explicitFireKill(self):    #kill the fire ball sprite after an explosion
+        self.fire.explicitKill()

@@ -8,6 +8,7 @@ import threading
 from character import character 
 from enemies import enemies
 from handSignChecker import handSignChecker
+from explosion import explosion
 
 class handTracker:
     import mediapipe as mp
@@ -99,38 +100,42 @@ down_move = False
 fire_shoot_stance = False
 fire_shoot_stance_dur = 0
 jutsu_perform = False
+
+#enemies controls
 enemySpeed = 3
+enemyAttack = False
+sasukeAttack = False
 
 sasuke = character(50, 200, width, height, screen)
-basicEnemy_1 = enemies(500,200,width,height,screen)
+basicEnemy_1 = enemies(500,200,width,height,screen,enemyType=1)
+explode_sprite_group = pygame.sprite.Group()
 
 BG = (144, 201, 120)
 RED = (255, 0, 0)
 
-def draw_bg():  #temp
+def draw_bg():  #temp background
     screen.fill(BG)
 
 #set comparator
 handSignTracker = handSignChecker()
 
-#camera on
+#camera on to detect hand gestures
 handtrack = handTracker()
 my_thread = threading.Thread(target=handtrack.run,daemon=True)
 my_thread.start()
 
 run = True
-
 while run:
     clock.tick(60)
-    draw_bg() #temp
+    draw_bg() #temp background
     
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
     sasuke.draw_character()
     
-    # basicEnemy_1.animate_updater()
-    # basicEnemy_1.move_towards_player(sasuke,enemySpeed)
-    # basicEnemy_1.draw_character()
+    basicEnemy_1.animate_updater()
+    basicEnemy_1.move_towards_player(sasuke,enemySpeed)
+    basicEnemy_1.draw_character()
 
     sasuke.fire_sprite_update()
     
@@ -195,7 +200,14 @@ while run:
                     handsigns.clear()
                 else: 
                     jutsu_perform = True
-
+                    
+    #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    explode_sprite_group.draw(screen)
+    explode_sprite_group.update()
+    if pygame.sprite.spritecollide(basicEnemy_1,sasuke.getFireSprite(),False):
+        explode_sprite_group.add(explosion(sasuke.getFireX(),sasuke.getFireY(),1))
+        sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
+        
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
 print(handsigns)
