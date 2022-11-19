@@ -97,7 +97,10 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
+
+#basic attack
 basic_attack = False
+basic_attack_dur = 0
 
 #fire style jutsu
 fire_shoot_stance = False
@@ -180,6 +183,12 @@ while run:
                 chidori_right = False
                 handsigns.clear()
             chidori_dur += 1
+        elif basic_attack:
+            if basic_attack_dur == 25:
+                basic_attack = False
+                basic_attack_dur = 0
+            sasuke.action_updater(5)
+            basic_attack_dur += 1
         elif left_move or right_move or up_move or down_move:
             sasuke.action_updater(1)
         else:
@@ -225,6 +234,8 @@ while run:
             if event.key == pygame.K_d:
                 right_move = True
                 facing_right = True
+            if event.key == pygame.K_e:
+                basic_attack = True
             if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
                 if jutsu_perform == True:
                     jutsu_perform = False
