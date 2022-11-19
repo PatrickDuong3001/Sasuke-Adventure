@@ -97,6 +97,7 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
+basic_attack = False
 
 #fire style jutsu
 fire_shoot_stance = False
@@ -164,7 +165,7 @@ while run:
         elif chidori_stance:
             if chidori_dur <= 40:
                 sasuke.action_updater(3)
-            elif chidori_dur > 40 and chidori_dur < 82: 
+            elif chidori_dur > 40 and chidori_dur < 90: 
                 if facing_right:
                     chidori_right = True
                 else: 
