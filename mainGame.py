@@ -97,12 +97,21 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
+
+#fire style jutsu
 fire_shoot_stance = False
 fire_shoot_stance_dur = 0
 jutsu_perform = False
 
+#chidori jutsu
+chidori_stance = False
+chidori_dur = 0
+facing_right = True #helpful for chidori move
+chidori_right = False
+chidori_left = False
+
 #enemies controls
-enemySpeed = 3
+enemySpeed = 0
 enemyAttack = False
 sasukeAttack = False
 
@@ -152,19 +161,38 @@ while run:
                 fire_shoot = False
                 jutsu_perform = False          #set false to disable hand sign detection. User has to press c every time to perform a jutsu
                 handsigns.clear()              #clear handsigns list to prepare for next jutsu
+        elif chidori_stance:
+            if chidori_dur <= 40:
+                sasuke.action_updater(3)
+            elif chidori_dur > 40 and chidori_dur < 82: 
+                if facing_right:
+                    chidori_right = True
+                else: 
+                    chidori_left = True
+                sasuke.action_updater(4)
+                sasuke.chidori_move(chidori_left,chidori_right)
+            else: 
+                chidori_stance = False
+                jutsu_perform = False
+                chidori_dur = 0
+                chidori_left = False
+                chidori_right = False
+                handsigns.clear()
+            chidori_dur += 1
         elif left_move or right_move or up_move or down_move:
             sasuke.action_updater(1)
         else:
             sasuke.action_updater(0)
-        sasuke.character_movements(left_move, right_move,down_move,up_move)
+        if not chidori_stance:
+            sasuke.character_movements(left_move, right_move,down_move,up_move)
 
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$hand signs detection controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if len(handsigns) == 4 and jutsu_perform == True:                 
-        if handSignTracker.compareHandSign(handsigns) == 1:
+        if handSignTracker.compareHandSign(handsigns) == 1: #fire style
             fire_shoot_stance = True
             fire_shoot = True
-        elif handSignTracker.compareHandSign(handsigns) == 2:
-            print("Place Holder")
+        elif handSignTracker.compareHandSign(handsigns) == 2: #chidori
+            chidori_stance = True
         else: 
             handsigns.clear()          #the user performs wrong handsigns, so clear handsigns list
                 
@@ -192,8 +220,10 @@ while run:
                 down_move = True
             if event.key == pygame.K_a:
                 left_move = True
+                facing_right = False
             if event.key == pygame.K_d:
                 right_move = True
+                facing_right = True
             if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
                 if jutsu_perform == True:
                     jutsu_perform = False

@@ -19,7 +19,7 @@ class character(pygame.sprite.Sprite):
         self.flip_character = False
         self.f_ind = 0    
         self.animation_list = []    
-        animation_types = ["stand", "run","fire"]
+        animation_types = ["stand", "run","fire","chidori_charge","chidori_attack"]
         
         self.fire_flip = False
         self.fire = None
@@ -90,6 +90,24 @@ class character(pygame.sprite.Sprite):
         if up_move:
             if self.rect.y >= 10:
                 dy = -3        
+        self.rect.y += dy
+        self.rect.x += dx
+    
+    def chidori_move(self, left_move, right_move):
+        dx = 0
+        dy = 0
+        if right_move:
+            if self.rect.x <= self.width - 80:
+                dx = 7
+            self.flip_character = False
+            self.fire_flip = False
+            self.character_direct = 1
+        if left_move:
+            if self.rect.x >= 1:
+                dx = -7
+            self.fire_flip = True
+            self.flip_character = True
+            self.character_direct = -1
         self.rect.y += dy
         self.rect.x += dx
     
