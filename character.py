@@ -19,7 +19,7 @@ class character(pygame.sprite.Sprite):
         self.flip_character = False
         self.f_ind = 0    
         self.animation_list = []    
-        animation_types = ["stand", "run","fire","chidori_charge","chidori_attack"]
+        animation_types = ["stand", "run","fire","chidori_charge","chidori_attack","swing"]
         
         self.fire_flip = False
         self.fire = None

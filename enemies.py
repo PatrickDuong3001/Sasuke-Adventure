@@ -71,8 +71,11 @@ class enemies(pygame.sprite.Sprite):
         else:
             self.action_updater(1)
             
-    def enemyTakeDamage(self):
+    def enemyTakeFireDamage(self):
         self.health -= 50
+    
+    def enemyTakeSwingDamage(self):
+        self.health -= 10
     
     def draw_character(self):
         self.screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
