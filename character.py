@@ -10,7 +10,7 @@ class character(pygame.sprite.Sprite):
         self.screen = screen
         
         self.alive = True
-        self.health = 100
+        self.health = 10000
         self.max_health = self.health
         self.update_time = pygame.time.get_ticks()
         self.cooldown_jutsu_duration = 0
@@ -132,3 +132,13 @@ class character(pygame.sprite.Sprite):
     
     def explicitFireKill(self):    #kill the fire ball sprite after an explosion
         self.fire.explicitKill()
+    
+    def takeSwingDamge(self):
+        self.health -= 2
+    
+    def health_bar_draw(self):
+        #calculate health ratio
+        ratio = self.health / self.max_health
+        pygame.draw.rect(self.screen, (0, 0, 0), (55, 5, 154, 24))
+        pygame.draw.rect(self.screen, (255, 0, 0), (57, 7, 150, 20))
+        pygame.draw.rect(self.screen, (0, 255, 0), (57, 7, 150 * ratio, 20))
