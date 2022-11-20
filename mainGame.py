@@ -1,5 +1,4 @@
 import pygame
-import os
 import sys
 import cv2
 import numpy as np
@@ -247,7 +246,7 @@ while run:
     explode_sprite_group.draw(screen)
     explode_sprite_group.update()
     if pygame.sprite.spritecollide(basicEnemy_1,sasuke.getFireSprite(),False):
-        explode_sprite_group.add(explosion(sasuke.getFireX(),sasuke.getFireY(),1))
+        explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
         sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
         
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
