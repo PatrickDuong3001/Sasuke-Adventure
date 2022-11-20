@@ -18,7 +18,7 @@ class enemies(pygame.sprite.Sprite):
         self.flip_character = False
         self.f_ind = 0    
         self.animation_list = []    
-        animation_types = ["run", "attack"]
+        animation_types = ["run", "attack","die"]
         
         for animation in animation_types:
             temp = []
@@ -64,7 +64,7 @@ class enemies(pygame.sprite.Sprite):
         if dist != 0:
             dx, dy = dx / dist, dy / dist  # Normalize.
         # Move along this normalized vector towards the player at current speed.
-        if dist >= 35:
+        if dist >= 60:
             self.action_updater(0)
             self.rect.x += dx * speed
             self.rect.y += dy * speed
@@ -75,7 +75,10 @@ class enemies(pygame.sprite.Sprite):
         self.health -= 50
     
     def enemyTakeSwingDamage(self):
-        self.health -= 10
+        self.health -= 1
     
     def draw_character(self):
         self.screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
+    
+    def getHealth(self):
+        return self.health

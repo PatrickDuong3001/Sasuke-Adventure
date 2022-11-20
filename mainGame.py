@@ -145,10 +145,6 @@ while run:
     sasuke.update()
     sasuke.draw_character()
     
-    basicEnemy_1.animate_updater()
-    basicEnemy_1.move_towards_player(sasuke,enemySpeed)
-    basicEnemy_1.draw_character()
-
     sasuke.fire_sprite_update()
     
     if sasuke.checkAlive:
@@ -245,9 +241,25 @@ while run:
     #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     explode_sprite_group.draw(screen)
     explode_sprite_group.update()
+        
     if pygame.sprite.spritecollide(basicEnemy_1,sasuke.getFireSprite(),False):
         explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+        basicEnemy_1.enemyTakeFireDamage()
         sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
+        
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, basicEnemy_1):
+        if basic_attack:
+            basicEnemy_1.enemyTakeSwingDamage()
+        else: 
+            print("sasuke take damage")        
+            
+    #$$$$$$$$$$$$$$$$$$$$$$$$Enemies states and controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    if basicEnemy_1.getHealth() > 0:
+        basicEnemy_1.animate_updater()
+        basicEnemy_1.move_towards_player(sasuke,enemySpeed)
+        basicEnemy_1.draw_character()
+    else:
+        basicEnemy_1.kill()
         
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
