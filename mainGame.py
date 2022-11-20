@@ -89,6 +89,7 @@ height = 640
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Test')
 clock = pygame.time.Clock()
+pygame.font.init()
 
 #player controls
 left_move = False
@@ -96,6 +97,8 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
+HP_font = pygame.font.Font("font.TTF",20)
+HP = HP_font.render("HP:",True,"Red")
 
 #basic attack
 basic_attack = False
@@ -140,10 +143,12 @@ run = True
 while run:
     clock.tick(60)
     draw_bg() #temp background
+    screen.blit(HP,(5,5))
     
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
     sasuke.draw_character()
+    sasuke.health_bar_draw()
     
     sasuke.fire_sprite_update()
     
@@ -251,7 +256,7 @@ while run:
         if basic_attack:
             basicEnemy_1.enemyTakeSwingDamage()
         else: 
-            print("sasuke take damage")        
+            sasuke.takeSwingDamge()       
             
     #$$$$$$$$$$$$$$$$$$$$$$$$Enemies states and controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if basicEnemy_1.getHealth() > 0:
