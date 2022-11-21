@@ -3,13 +3,12 @@ import pygame
 import os
 import math
 
-class enemies(pygame.sprite.Sprite): 
-    def __init__(self, x, y, width, height, screen, enemyType):
+class zetsu(pygame.sprite.Sprite): 
+    def __init__(self, x, y, width, height, screen):
         pygame.sprite.Sprite.__init__(self)
         self.width = width 
         self.height = height
         self.screen = screen
-        self.enemyType = enemyType
         
         self.alive = True
         self.health = 100
@@ -22,8 +21,8 @@ class enemies(pygame.sprite.Sprite):
         
         for animation in animation_types:
             temp = []
-            for i in range(len(os.listdir(f'animation/enemy{self.enemyType}/{animation}'))):
-                img = pygame.image.load(f'animation/enemy{self.enemyType}/{animation}/{i}.png').convert_alpha()
+            for i in range(len(os.listdir(f'animation/zetsu/{animation}'))):
+                img = pygame.image.load(f'animation/zetsu/{animation}/{i}.png').convert_alpha()
                 img = pygame.transform.scale(img, (int(1.2*img.get_width()), int(1.2*img.get_height())))
                 temp.append(img)
             self.animation_list.append(temp)
