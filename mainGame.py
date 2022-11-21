@@ -5,7 +5,7 @@ import numpy as np
 import pickle
 import threading
 from character import character 
-from enemies import enemies
+from zetsu import zetsu
 from handSignChecker import handSignChecker
 from explosion import explosion
 
@@ -122,7 +122,7 @@ enemyAttack = False
 sasukeAttack = False
 
 sasuke = character(50, 200, width, height, screen)
-basicEnemy_1 = enemies(500,200,width,height,screen,enemyType=1)
+zetsu_1 = zetsu(500,200,width,height,screen)
 explode_sprite_group = pygame.sprite.Group()
 
 BG = (144, 201, 120)
@@ -247,24 +247,24 @@ while run:
     explode_sprite_group.draw(screen)
     explode_sprite_group.update()
         
-    if pygame.sprite.spritecollide(basicEnemy_1,sasuke.getFireSprite(),False):
+    if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False):
         explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
-        basicEnemy_1.enemyTakeFireDamage()
+        zetsu_1.enemyTakeFireDamage()
         sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
         
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, basicEnemy_1):
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):
         if basic_attack:
-            basicEnemy_1.enemyTakeSwingDamage()
+            zetsu_1.enemyTakeSwingDamage()
         else: 
             sasuke.takeSwingDamge()       
             
     #$$$$$$$$$$$$$$$$$$$$$$$$Enemies states and controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    if basicEnemy_1.getHealth() > 0:
-        basicEnemy_1.animate_updater()
-        basicEnemy_1.move_towards_player(sasuke,enemySpeed)
-        basicEnemy_1.draw_character()
+    if zetsu_1.getHealth() > 0:
+        zetsu_1.animate_updater()
+        zetsu_1.move_towards_player(sasuke,enemySpeed)
+        zetsu_1.draw_character()
     else:
-        basicEnemy_1.kill()
+        zetsu_1.kill()
         
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
