@@ -3,7 +3,7 @@ import os
 from waterDragon import waterDragon
 import math
 
-class zabuza(pygame.sprite.Sprite):
+class minion(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, screen):
         pygame.sprite.Sprite.__init__(self)
         self.width = width
@@ -19,16 +19,16 @@ class zabuza(pygame.sprite.Sprite):
         self.original_time = 0
         self.f_ind = 0    
         self.animation_list = []    
-        animation_types = ["run","swing","stand"]
+        animation_types = ["stand"]
         
         self.water = None
         self.water_sprite_group = pygame.sprite.Group()
         
         for animation in animation_types:
             temp = []
-            for i in range(len(os.listdir(f'animation/zabuza/{animation}'))):
-                img = pygame.image.load(f'animation/zabuza/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(1.6*img.get_width()), int(1.6*img.get_height())))
+            for i in range(len(os.listdir(f'animation/minion/{animation}'))):
+                img = pygame.image.load(f'animation/minion/{animation}/{i}.png').convert_alpha()
+                img = pygame.transform.scale(img, (int(2.0*img.get_width()), int(2.0*img.get_height())))
                 temp.append(img)
             self.animation_list.append(temp)
         self.image = self.animation_list[self.action_type][self.f_ind]
@@ -56,26 +56,11 @@ class zabuza(pygame.sprite.Sprite):
             self.update_time = pygame.time.get_ticks()
             
     def waterJutsu(self):
-        self.water = waterDragon(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx - 50, self.rect.centery-10, self.character_direct,self.width)
+        self.water = waterDragon(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx - 80, self.rect.centery-5, self.character_direct,self.width)
         self.water_sprite_group.add(self.water)
 
-    def movements(self, player, new_time, idle):
-        # Find direction vector (dx, dy) between enemy and player.
-        dx, dy = player.rect.x - self.rect.x, player.rect.y - self.rect.y
-        
-        dist = math.hypot(dx, dy)
-        if dist != 0:
-            dx, dy = dx / dist, dy / dist  # Normalize.
-        # Move along this normalized vector towards the player at current speed.
-        if not idle:
-            if dist >= 60:
-                self.action_updater(0)
-                self.rect.y = player.rect.y
-            else:
-                self.action_updater(1)
-        else: 
-            self.action_updater(2)
-            
+    def movements(self, new_time): 
+        self.action_updater(0)       
         if (new_time - self.original_time) % 100 == 0: 
             self.waterJutsu()
         

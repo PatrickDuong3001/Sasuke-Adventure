@@ -8,7 +8,7 @@ from character import character
 from zetsu import zetsu
 from handSignChecker import handSignChecker
 from explosion import explosion
-from zabuza import zabuza
+from minion import minion
 
 class handTracker:
     import mediapipe as mp
@@ -128,7 +128,7 @@ water_dur = 0
 
 sasuke = character(50, 200, width, height, screen)
 zetsu_1 = zetsu(500,500,width,height,screen)
-zabuza_1 = zabuza(600,200,width,height,screen)
+minion_1 = minion(600,200,width,height,screen)
 explode_sprite_group = pygame.sprite.Group()
 
 BG = (144, 201, 120)
@@ -276,10 +276,10 @@ while run:
     else:
         zetsu_1.kill()
          
-    zabuza_1.movements(sasuke,pygame.time.get_ticks(),idle)
-    zabuza_1.animate_updater()
-    zabuza_1.draw_character()
-    zabuza_1.water_sprite_update()
+    minion_1.movements(pygame.time.get_ticks())
+    minion_1.animate_updater()
+    minion_1.draw_character()
+    minion_1.water_sprite_update()
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
 print(handsigns)
