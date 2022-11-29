@@ -11,7 +11,7 @@ class minion(pygame.sprite.Sprite):
         self.screen = screen
         
         self.alive = True
-        self.health = 1000
+        self.health = 500
         self.max_health = self.health
         self.update_time = pygame.time.get_ticks()
         self.action_type = 0
@@ -61,7 +61,7 @@ class minion(pygame.sprite.Sprite):
 
     def movements(self, new_time): 
         self.action_updater(0)       
-        if (new_time - self.original_time) % 100 == 0: 
+        if (new_time - self.original_time) % 577 == 0: 
             self.waterJutsu()
         
     def water_sprite_update(self):
@@ -82,4 +82,17 @@ class minion(pygame.sprite.Sprite):
     
     def explicitWaterKill(self):    #kill the fire ball sprite after an explosion
         self.water.explicitKill()
+        self.water = None
     
+    def getHealth(self):
+        return self.health 
+
+
+    def takeFireDamage(self):
+        self.health -= 100
+    
+    def takeSwingDamage(self):
+        self.health -= 2
+    
+    def printHealth(self):
+        print(self.health)

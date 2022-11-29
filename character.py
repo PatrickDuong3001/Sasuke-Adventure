@@ -132,9 +132,13 @@ class character(pygame.sprite.Sprite):
     
     def explicitFireKill(self):    #kill the fire ball sprite after an explosion
         self.fire.explicitKill()
+        self.fire = None
     
     def takeSwingDamge(self):
         self.health -= 2
+    
+    def takeWaterDamage(self):
+        self.health -= 100
     
     def health_bar_draw(self):
         #calculate health ratio
@@ -142,3 +146,6 @@ class character(pygame.sprite.Sprite):
         pygame.draw.rect(self.screen, (0, 0, 0), (55, 5, 154, 24))
         pygame.draw.rect(self.screen, (255, 0, 0), (57, 7, 150, 20))
         pygame.draw.rect(self.screen, (0, 255, 0), (57, 7, 150 * ratio, 20))
+        
+    def getFire(self):
+        return self.fire

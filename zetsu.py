@@ -74,7 +74,7 @@ class zetsu(pygame.sprite.Sprite):
         self.health -= 50
     
     def enemyTakeSwingDamage(self):
-        self.health -= 1
+        self.health -= 2
     
     def draw_character(self):
         self.screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
