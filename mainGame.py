@@ -128,8 +128,10 @@ water_dur = 0
 
 sasuke = character(50, 200, width, height, screen)
 zetsu_1 = zetsu(500,500,width,height,screen)
-minion_1 = minion(600,200,width,height,screen)
-explode_sprite_group = pygame.sprite.Group()
+minion_1 = minion(750,200,width,height,screen)
+
+fire_explode_sprite_group = pygame.sprite.Group()
+water_explode_sprite_group = pygame.sprite.Group()
 
 BG = (144, 201, 120)
 RED = (255, 0, 0)
@@ -254,19 +256,49 @@ while run:
                     jutsu_perform = True
                     
     #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    explode_sprite_group.draw(screen)
-    explode_sprite_group.update()
+    fire_explode_sprite_group.draw(screen)
+    fire_explode_sprite_group.update()
+    water_explode_sprite_group.draw(screen)
+    water_explode_sprite_group.update()
         
-    if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False):
-        explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+    if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False):   #when zetsu gets hit by fire
+        fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
         zetsu_1.enemyTakeFireDamage()
         sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
+    
+    if pygame.sprite.spritecollide(minion_1,sasuke.getFireSprite(),False):  #when minion gets hit by fire
+        fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+        minion_1.takeFireDamage()
+        sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
+    
+    
+    if pygame.sprite.spritecollide(sasuke,minion_1.getWaterSprite(),False):  #when sasuke gets hit by water
+        try:
+            water_explode_sprite_group.add(explosion(minion_1.getWaterX()-10,minion_1.getWaterY(),2))
+            minion_1.explicitWaterKill()
+        except:
+            water_explode_sprite_group.empty()
+        finally:
+            sasuke.takeWaterDamage()
         
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):    #when sasuke swings zetsu
         if basic_attack:
-            zetsu_1.enemyTakeSwingDamage()
+            if zetsu_1.getHealth() > 0:
+                zetsu_1.enemyTakeSwingDamage()
         else: 
-            sasuke.takeSwingDamge()       
+            if zetsu_1.getHealth() > 0: 
+                sasuke.takeSwingDamge()       
+    
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):    #when sasuke swings minion
+        if basic_attack: 
+            if minion_1.getHealth() > 0:
+                minion_1.takeSwingDamage()
+    
+    if sasuke.getFire() != None:       #when fire hits water
+        if pygame.sprite.spritecollide(sasuke.getFire(),minion_1.getWaterSprite(),False):
+            water_explode_sprite_group.add(explosion(minion_1.getWaterX()+50,minion_1.getWaterY(),2))
+            sasuke.explicitFireKill()
+            minion_1.explicitWaterKill()
             
     #$$$$$$$$$$$$$$$$$$$$$$$$Enemies states and controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if zetsu_1.getHealth() > 0:
@@ -275,11 +307,15 @@ while run:
         zetsu_1.draw_character()
     else:
         zetsu_1.kill()
-         
-    minion_1.movements(pygame.time.get_ticks())
-    minion_1.animate_updater()
-    minion_1.draw_character()
-    minion_1.water_sprite_update()
+        
+    if minion_1.getHealth() > 0:
+        minion_1.movements(pygame.time.get_ticks())
+        minion_1.animate_updater()
+        minion_1.draw_character()
+        minion_1.water_sprite_update()
+    else: 
+        minion_1.kill()
+        
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
 print(handsigns)
