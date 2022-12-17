@@ -9,6 +9,7 @@ from zetsu import zetsu
 from handSignChecker import handSignChecker
 from explosion import explosion
 from minion import minion
+from sharingan import Sharingan
 
 class handTracker:
     import mediapipe as mp
@@ -117,8 +118,13 @@ facing_right = True #helpful for chidori move
 chidori_right = False
 chidori_left = False
 
+#sharingan activation
+sharingan_on = False
+left_sharingan = Sharingan(320,350)
+right_sharingan = Sharingan(470,350)
+
 #enemies controls
-enemySpeed = 0
+enemySpeed = 3
 enemyAttack = False
 sasukeAttack = False
 idle = True
@@ -130,8 +136,12 @@ sasuke = character(50, 200, width, height, screen)
 zetsu_1 = zetsu(500,500,width,height,screen)
 minion_1 = minion(750,200,width,height,screen)
 
+#sprite groups
 fire_explode_sprite_group = pygame.sprite.Group()
 water_explode_sprite_group = pygame.sprite.Group()
+left_sharingan_group = pygame.sprite.Group()
+right_sharingan_group = pygame.sprite.Group()
+sharingan_dur = 0
 
 BG = (144, 201, 120)
 RED = (255, 0, 0)
@@ -160,6 +170,18 @@ while run:
     
     sasuke.fire_sprite_update()
     
+    if sharingan_on:
+        left_sharingan_group.add(left_sharingan)
+        right_sharingan_group.add(right_sharingan)
+        sharingan_dur += 1
+        if sharingan_dur == 50:
+            sharingan_dur = 0
+            sharingan_on = False
+            left_sharingan.deactivate()
+            right_sharingan.deactivate()
+            left_sharingan_group.empty()
+            right_sharingan_group.empty()
+            
     if sasuke.checkAlive:
         #shoot bullets
         if fire_shoot_stance:
@@ -231,6 +253,8 @@ while run:
                 left_move = False
             if event.key == pygame.K_d:
                 right_move = False
+            # if event.key == pygame.K_r:
+            #     sharingan_on = False
             
         #keys pushed
         if event.type == pygame.KEYDOWN:
@@ -254,12 +278,20 @@ while run:
                     handsigns.clear()
                 else: 
                     jutsu_perform = True
+            if event.key == pygame.K_r:
+                sharingan_on = True
+                enemySpeed = 2
                     
     #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     fire_explode_sprite_group.draw(screen)
     fire_explode_sprite_group.update()
     water_explode_sprite_group.draw(screen)
     water_explode_sprite_group.update()
+    
+    left_sharingan_group.draw(screen)
+    left_sharingan_group.update()
+    right_sharingan_group.draw(screen)
+    right_sharingan_group.update()
         
     if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False):   #when zetsu gets hit by fire
         fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
