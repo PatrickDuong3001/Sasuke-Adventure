@@ -12,6 +12,10 @@ class character(pygame.sprite.Sprite):
         self.alive = True
         self.health = 10000
         self.max_health = self.health
+        self.mana = 1000
+        self.max_mana = self.mana
+        self.sharingan_on = False
+        
         self.update_time = pygame.time.get_ticks()
         self.cooldown_jutsu_duration = 0
         self.action_type = 0
@@ -147,5 +151,33 @@ class character(pygame.sprite.Sprite):
         pygame.draw.rect(self.screen, (255, 0, 0), (57, 7, 150, 20))
         pygame.draw.rect(self.screen, (0, 255, 0), (57, 7, 150 * ratio, 20))
         
+    def mana_bar_draw(self):
+        #calculate health ratio
+        ratio = self.mana / self.max_mana
+        pygame.draw.rect(self.screen, (0, 0, 0), (110, 38, 112, 24))
+        pygame.draw.rect(self.screen, (255, 0, 0), (112, 40, 108, 20))
+        pygame.draw.rect(self.screen, (0, 0, 255), (112, 40, 108 * ratio, 20))
+    
     def getFire(self):
         return self.fire
+    
+    def activateSharingan(self):
+        self.sharingan_on = True
+    
+    def deactivateSharingan(self):
+        self.sharingan_on = False
+        
+    def getSharinganStatus(self):
+        return self.sharingan_on
+    
+    def mana_active_lost(self):
+        self.mana -= 100
+    
+    def mana_left(self):
+        return self.mana
+    
+    def mana_passive_lost(self):
+        self.mana -= 0.1
+    
+    def mana_passive_gain(self):
+        self.mana += 2
