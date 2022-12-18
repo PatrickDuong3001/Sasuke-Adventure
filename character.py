@@ -92,7 +92,7 @@ class character(pygame.sprite.Sprite):
             if self.rect.y <= self.height - 100:
                 dy = 3
         if up_move:
-            if self.rect.y >= 10:
+            if self.rect.y >= 150:
                 dy = -3        
         self.rect.y += dy
         self.rect.x += dx
