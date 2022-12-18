@@ -1,8 +1,9 @@
 import pygame
 
 class waterDragon(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction, width):
+    def __init__(self, x, y, direction, width, speed):
         self.width = width
+        self.speed = speed
         water_dragon = pygame.image.load('animation/water.png').convert_alpha()
         pygame.sprite.Sprite.__init__(self)
         self.image = water_dragon
@@ -11,7 +12,7 @@ class waterDragon(pygame.sprite.Sprite):
         self.dragon_direct = direction
 
     def update(self):
-        self.rect.x -= (self.dragon_direct * 5)
+        self.rect.x -= (self.dragon_direct * self.speed)
         if self.rect.right < 0 or self.rect.left > self.width:
             self.kill()
     

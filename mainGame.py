@@ -94,13 +94,15 @@ clock = pygame.time.Clock()
 pygame.font.init()
 
 #player controls
+mana_empty = False
 left_move = False
 right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
 HP_font = pygame.font.Font("font.TTF",20)
-HP = HP_font.render("HP:",True,"Red")
+HP = HP_font.render("HP",True,"Green")
+MANA = HP_font.render("Chakra",True,"Blue")
 
 #basic attack
 basic_attack = False
@@ -162,15 +164,18 @@ while run:
     clock.tick(60)
     draw_bg() #temp background
     screen.blit(HP,(5,5))
+    screen.blit(MANA,(5,40))
     
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
     sasuke.draw_character()
     sasuke.health_bar_draw()
+    sasuke.mana_bar_draw()
     
     sasuke.fire_sprite_update()
     
-    if sharingan_on:
+    if sharingan_on and sasuke.mana_left() >= 5:
+        sasuke.activateSharingan()
         left_sharingan_group.add(left_sharingan)
         right_sharingan_group.add(right_sharingan)
         sharingan_dur += 1
@@ -182,8 +187,20 @@ while run:
             left_sharingan_group.empty()
             right_sharingan_group.empty()
             
-    if sasuke.checkAlive:
-        #shoot bullets
+    if sasuke.checkAlive():
+        #check mana
+        if sasuke.getSharinganStatus() == True and sasuke.mana_left() > 0: 
+            sasuke.mana_passive_lost()  
+        if sasuke.mana_left() <= 0: 
+            sasuke.deactivateSharingan()
+            mana_empty = True
+            enemySpeed = 3
+        elif sasuke.mana_left() >= 1000:
+            mana_empty = False
+        if mana_empty == True:
+            sasuke.mana_passive_gain()
+            
+        #sasuke actions
         if fire_shoot_stance:
             if fire_shoot_stance_dur == 20:
                 fire_shoot_stance_dur = 0
@@ -192,6 +209,7 @@ while run:
             fire_shoot_stance_dur += 1
             if fire_shoot:
                 sasuke.fireJutsu()
+                sasuke.mana_active_lost()
                 fire_shoot = False
                 jutsu_perform = False          #set false to disable hand sign detection. User has to press c every time to perform a jutsu
                 handsigns.clear()              #clear handsigns list to prepare for next jutsu
@@ -199,6 +217,7 @@ while run:
             if chidori_dur <= 40:
                 sasuke.action_updater(3)
             elif chidori_dur > 40 and chidori_dur < 90: 
+                basic_attack = True
                 if facing_right:
                     chidori_right = True
                 else: 
@@ -206,12 +225,14 @@ while run:
                 sasuke.action_updater(4)
                 sasuke.chidori_move(chidori_left,chidori_right)
             else: 
+                sasuke.mana_active_lost()
                 chidori_stance = False
                 jutsu_perform = False
                 chidori_dur = 0
                 chidori_left = False
                 chidori_right = False
                 handsigns.clear()
+                basic_attack = False
             chidori_dur += 1
         elif basic_attack:
             if basic_attack_dur == 25:
@@ -229,10 +250,18 @@ while run:
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$hand signs detection controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if len(handsigns) == 4 and jutsu_perform == True:                 
         if handSignTracker.compareHandSign(handsigns) == 1: #fire style
-            fire_shoot_stance = True
-            fire_shoot = True
+            if sasuke.mana_left() > 100 and mana_empty == False:
+                fire_shoot_stance = True
+                fire_shoot = True
+            else: 
+                jutsu_perform = False
+                handsigns.clear()
         elif handSignTracker.compareHandSign(handsigns) == 2: #chidori
-            chidori_stance = True
+            if sasuke.mana > 100 and mana_empty == False:
+                chidori_stance = True
+            else:
+                jutsu_perform = False
+                handsigns.clear()
         else: 
             handsigns.clear()          #the user performs wrong handsigns, so clear handsigns list
                 
@@ -279,8 +308,9 @@ while run:
                 else: 
                     jutsu_perform = True
             if event.key == pygame.K_r:
-                sharingan_on = True
-                enemySpeed = 2
+                if mana_empty == False:
+                    sharingan_on = True
+                    enemySpeed = 2
                     
     #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     fire_explode_sprite_group.draw(screen)
@@ -313,7 +343,7 @@ while run:
         finally:
             sasuke.takeWaterDamage()
         
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):    #when sasuke swings zetsu
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):    #when sasuke swings zetsu or use chidori
         if basic_attack:
             if zetsu_1.getHealth() > 0:
                 zetsu_1.enemyTakeSwingDamage()
@@ -341,7 +371,7 @@ while run:
         zetsu_1.kill()
         
     if minion_1.getHealth() > 0:
-        minion_1.movements(pygame.time.get_ticks())
+        minion_1.movements(pygame.time.get_ticks(),enemySpeed)
         minion_1.animate_updater()
         minion_1.draw_character()
         minion_1.water_sprite_update()

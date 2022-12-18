@@ -9,6 +9,7 @@ class minion(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         self.screen = screen
+        self.speed = 5
         
         self.alive = True
         self.health = 500
@@ -56,10 +57,11 @@ class minion(pygame.sprite.Sprite):
             self.update_time = pygame.time.get_ticks()
             
     def waterJutsu(self):
-        self.water = waterDragon(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx - 80, self.rect.centery-5, self.character_direct,self.width)
+        self.water = waterDragon(0.6*self.rect.size[0] * self.character_direct + self.rect.centerx - 80, self.rect.centery-5, self.character_direct,self.width, self.speed)
         self.water_sprite_group.add(self.water)
 
-    def movements(self, new_time): 
+    def movements(self, new_time, speed): 
+        self.speed = speed
         self.action_updater(0)       
         if (new_time - self.original_time) % 577 == 0: 
             self.waterJutsu()
