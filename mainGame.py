@@ -86,12 +86,13 @@ class handTracker:
 handsigns = [] #set of handsigns
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 # width, height = screen.get_size()
-width = 800
-height = 640
+width = 1200
+height = 675
 screen = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Test')
 clock = pygame.time.Clock()
 pygame.font.init()
+background = pygame.image.load("animation/background.jpg").convert_alpha()
 
 #player controls
 mana_empty = False
@@ -101,7 +102,7 @@ fire_shoot = False
 up_move = False
 down_move = False
 HP_font = pygame.font.Font("font.TTF",20)
-HP = HP_font.render("HP",True,"Green")
+HP = HP_font.render("HP",True,"Dark Green")
 MANA = HP_font.render("Chakra",True,"Blue")
 
 #basic attack
@@ -122,8 +123,8 @@ chidori_left = False
 
 #sharingan activation
 sharingan_on = False
-left_sharingan = Sharingan(320,350)
-right_sharingan = Sharingan(470,350)
+left_sharingan = Sharingan(500,350)
+right_sharingan = Sharingan(650,350)
 
 #enemies controls
 enemySpeed = 3
@@ -145,12 +146,6 @@ left_sharingan_group = pygame.sprite.Group()
 right_sharingan_group = pygame.sprite.Group()
 sharingan_dur = 0
 
-BG = (144, 201, 120)
-RED = (255, 0, 0)
-
-def draw_bg():  #temp background
-    screen.fill(BG)
-
 #set comparator
 handSignTracker = handSignChecker()
 
@@ -162,7 +157,7 @@ my_thread.start()
 run = True
 while run:
     clock.tick(60)
-    draw_bg() #temp background
+    screen.blit(background,(0,0))
     screen.blit(HP,(5,5))
     screen.blit(MANA,(5,40))
     
