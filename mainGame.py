@@ -164,7 +164,7 @@ handsigns = [] #set of handsigns
 width = 1200
 height = 675
 screen = pygame.display.set_mode((width,height))
-pygame.display.set_caption('Test')
+pygame.display.set_caption('Sasuke Adventure')
 clock = pygame.time.Clock()
 pygame.font.init()
 background = pygame.image.load("animation/background.jpg").convert_alpha()
@@ -200,9 +200,15 @@ right_move = False
 fire_shoot = False
 up_move = False
 down_move = False
+score = 0
+savedScore = 0
+increaseScore = True
+
+#font and letters
 HP_font = pygame.font.Font("font.TTF",20)
 HP = HP_font.render("HP",True,"Dark Green")
 MANA = HP_font.render("Chakra",True,"Blue")
+Score = HP_font.render("Score:",True,"Red")
 
 #basic attack
 basic_attack = False
@@ -234,9 +240,14 @@ water_shoot = False
 water_stance = False 
 water_dur = 0
 
-sasuke = character(50, 200, width, height, screen)
-zetsu_1 = zetsu(500,500,width,height,screen)
-minion_1 = minion(750,200,width,height,screen)
+#enemies states
+zetsu_1_alive = True
+minion_1_alive = True
+
+#players and enemies creation
+sasuke = character(20, 200, width, height, screen)
+zetsu_1 = zetsu(1050,500,width,height,screen)
+minion_1 = minion(1150,200,width,height,screen)
 
 #sprite groups
 fire_explode_sprite_group = pygame.sprite.Group()
@@ -260,6 +271,13 @@ while run:
     screen.blit(background,(0,0))
     screen.blit(HP,(5,5))
     screen.blit(MANA,(5,40))
+    screen.blit(Score,(5,70))
+    scoreText = HP_font.render(f"{score}",True,"Red")
+    # if score != savedScore:
+    #     scoreTextTemp = HP_font.render(f"{score}",True,(0,0,0))
+    #     screen.blit(scoreTextTemp,(100,70))
+    #     savedScore = score
+    screen.blit(scoreText, (100,70))
     
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
@@ -380,8 +398,6 @@ while run:
                 left_move = False
             if event.key == pygame.K_d:
                 right_move = False
-            # if event.key == pygame.K_r:
-            #     sharingan_on = False
             
         #keys pushed
         if event.type == pygame.KEYDOWN:
@@ -469,6 +485,9 @@ while run:
         zetsu_1.draw_character()
     else:
         zetsu_1.kill()
+        if zetsu_1_alive:
+            score += 1
+            zetsu_1_alive = False
         
     if minion_1.getHealth() > 0:
         minion_1.movements(pygame.time.get_ticks(),enemySpeed)
@@ -477,6 +496,9 @@ while run:
         minion_1.water_sprite_update()
     else: 
         minion_1.kill()
+        if minion_1_alive:
+            score += 1
+            minion_1_alive = False
         
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
