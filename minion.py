@@ -13,7 +13,7 @@ class minion(pygame.sprite.Sprite):
         self.shoot_sound.set_volume(0.05)
         
         self.alive = True
-        self.health = 500
+        self.health = 200
         self.max_health = self.health
         self.update_time = pygame.time.get_ticks()
         self.action_type = 0
