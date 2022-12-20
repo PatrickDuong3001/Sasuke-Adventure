@@ -97,6 +97,8 @@ background = pygame.image.load("animation/background.jpg").convert_alpha()
 #sounds
 pygame.mixer.pre_init(44100, -16, 2, 512) #to improve sound quality
 pygame.mixer.init()
+background_sound = pygame.mixer.Sound("sound/background.mp3")
+background_sound.set_volume(0.05)
 chidori_sound = pygame.mixer.Sound("sound/chidori.mp3")
 chidori_sound.set_volume(0.1)
 katon_sound = pygame.mixer.Sound("sound/katon.mp3")
@@ -105,6 +107,7 @@ swing_sound = pygame.mixer.Sound("sound/swing.wav")
 swing_sound.set_volume(0.05)
 sharingan_sound = pygame.mixer.Sound("sound/sharingan.mp3")
 sharingan_sound.set_volume(0.1)
+
 
 #player controls
 mana_empty = False
@@ -167,6 +170,7 @@ my_thread = threading.Thread(target=handtrack.run,daemon=True)
 my_thread.start()
 
 run = True
+pygame.mixer.Channel(2).play(background_sound,-1)
 while run:
     clock.tick(60)
     screen.blit(background,(0,0))
