@@ -1,7 +1,6 @@
 import pygame
 import os
 from waterDragon import waterDragon
-import math
 
 class minion(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, screen):
@@ -10,6 +9,8 @@ class minion(pygame.sprite.Sprite):
         self.height = height
         self.screen = screen
         self.speed = 5
+        self.shoot_sound = pygame.mixer.Sound("sound/gun.wav")
+        self.shoot_sound.set_volume(0.05)
         
         self.alive = True
         self.health = 500
@@ -64,6 +65,7 @@ class minion(pygame.sprite.Sprite):
         self.speed = speed
         self.action_updater(0)       
         if (new_time - self.original_time) % 577 == 0: 
+            pygame.mixer.Channel(1).play(self.shoot_sound)
             self.waterJutsu()
         
     def water_sprite_update(self):
