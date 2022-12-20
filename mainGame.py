@@ -81,7 +81,82 @@ class handTracker:
                 myGesture=self.findGesture(unknownGesture,self.knownGestures,self.keyPoints,self.gestNames,10)
                 if jutsu_perform == True and (myGesture != 'Unknown') and len(handsigns) < 4 and (myGesture not in handsigns):
                     print(myGesture)
-                    handsigns.append(myGesture)        
+                    if len(handsigns) == 0: 
+                        if myGesture == "one": 
+                            screen.blit(ges1,(180,580))
+                            pygame.display.update(ges1.get_rect())
+                        elif myGesture == "two": 
+                            screen.blit(ges2,(180,580))
+                            pygame.display.update(ges2.get_rect())
+                        elif myGesture == "three": 
+                            screen.blit(ges3,(180,580))
+                            pygame.display.update(ges3.get_rect())
+                        elif myGesture == "four": 
+                            screen.blit(ges4,(180,590))
+                            pygame.display.update(ges4.get_rect())
+                        elif myGesture == "five": 
+                            screen.blit(ges5,(180,590))
+                            pygame.display.update(ges5.get_rect())
+                    elif len(handsigns) == 1:
+                        if myGesture == "one": 
+                            screen.blit(ges1,(370,580))
+                            pygame.display.update(ges1.get_rect())
+                        elif myGesture == "two": 
+                            screen.blit(ges2,(370,580))
+                            pygame.display.update(ges2.get_rect())
+                        elif myGesture == "three": 
+                            screen.blit(ges3,(370,580))
+                            pygame.display.update(ges3.get_rect())
+                        elif myGesture == "four": 
+                            screen.blit(ges4,(370,595))
+                            pygame.display.update(ges4.get_rect())
+                        elif myGesture == "five": 
+                            screen.blit(ges5,(370,595))
+                            pygame.display.update(ges5.get_rect())
+                    elif len(handsigns) == 2:
+                        if myGesture == "one": 
+                            screen.blit(ges1,(560,580))
+                            pygame.display.update(ges1.get_rect())
+                        elif myGesture == "two": 
+                            screen.blit(ges2,(560,580))
+                            pygame.display.update(ges2.get_rect())
+                        elif myGesture == "three": 
+                            screen.blit(ges3,(560,580))
+                            pygame.display.update(ges3.get_rect())
+                        elif myGesture == "four": 
+                            screen.blit(ges4,(560,595))
+                            pygame.display.update(ges4.get_rect())
+                        elif myGesture == "five": 
+                            screen.blit(ges5,(560,595))
+                            pygame.display.update(ges5.get_rect())
+                    elif len(handsigns) == 3:
+                        if myGesture == "one": 
+                            screen.blit(ges1,(750,50))
+                            pygame.display.update(ges1.get_rect())
+                        elif myGesture == "two": 
+                            screen.blit(ges2,(750,50))
+                            pygame.display.update(ges2.get_rect())
+                        elif myGesture == "three": 
+                            screen.blit(ges3,(750,50))
+                            pygame.display.update(ges3.get_rect())
+                        elif myGesture == "four": 
+                            screen.blit(ges4,(750,595))
+                            pygame.display.update(ges4.get_rect())
+                        elif myGesture == "five": 
+                            screen.blit(ges5,(750,595))
+                            pygame.display.update(ges5.get_rect())
+                    handsigns.append(myGesture)    
+                    if len(handsigns) == 4:
+                        if handSignTracker.compareHandSign(handsigns) == 1: #fire
+                            screen.blit(fireball,(940,590))
+                            pygame.display.update(fireball.get_rect())
+                        elif handSignTracker.compareHandSign(handsigns) == 2: #chidori
+                            screen.blit(chidori,(940,590))
+                            pygame.display.update(chidori.get_rect())
+                        else: #wrong handsign sequence
+                            screen.blit(wrong,(940,590))
+                            pygame.display.update(wrong.get_rect())              
+                        
 ##############################################################Main Game########################################################################
 handsigns = [] #set of handsigns
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -108,6 +183,15 @@ swing_sound.set_volume(0.05)
 sharingan_sound = pygame.mixer.Sound("sound/sharingan.mp3")
 sharingan_sound.set_volume(0.1)
 
+#gestures
+ges1 = pygame.image.load("gestures/ges1.png").convert_alpha()
+ges2 = pygame.image.load("gestures/ges2.png").convert_alpha()
+ges3 = pygame.image.load("gestures/ges3.png").convert_alpha()
+ges4 = pygame.image.load("gestures/ges4.png").convert_alpha()
+ges5 = pygame.image.load("gestures/ges5.png").convert_alpha()
+fireball = pygame.image.load("animation/fire2.png").convert_alpha()
+chidori = pygame.image.load("animation/chidori.png").convert_alpha()
+wrong = pygame.image.load("animation/wrong.png").convert_alpha()
 
 #player controls
 mana_empty = False
@@ -317,6 +401,7 @@ while run:
                 swing_sound.play()
                 basic_attack = True
             if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
+                pygame.draw.rect(screen, (0,0,0), pygame.Rect(0, 580, 1200, 100))
                 if jutsu_perform == True:
                     jutsu_perform = False
                     handsigns.clear()

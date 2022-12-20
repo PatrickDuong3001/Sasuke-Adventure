@@ -64,7 +64,7 @@ class minion(pygame.sprite.Sprite):
     def movements(self, new_time, speed): 
         self.speed = speed
         self.action_updater(0)       
-        if (new_time - self.original_time) % 577 == 0: 
+        if (new_time - self.original_time) % 1177 == 0: 
             pygame.mixer.Channel(1).play(self.shoot_sound)
             self.waterJutsu()
         
