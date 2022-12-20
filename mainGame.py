@@ -159,8 +159,8 @@ class handTracker:
                         
 ##############################################################Main Game########################################################################
 handsigns = [] #set of handsigns
-# screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-# width, height = screen.get_size()
+
+#screen setup
 width = 1200
 height = 675
 screen = pygame.display.set_mode((width,height))
@@ -202,7 +202,7 @@ up_move = False
 down_move = False
 score = 0
 savedScore = 0
-increaseScore = True
+level = 1
 
 #font and letters
 HP_font = pygame.font.Font("font.TTF",20)
@@ -242,12 +242,23 @@ water_dur = 0
 
 #enemies states
 zetsu_1_alive = True
+zetsu_2_alive = True
+zetsu_3_alive = True
 minion_1_alive = True
+minion_2_alive = True
+minion_3_alive = True
+minion_4_alive = True
 
 #players and enemies creation
 sasuke = character(20, 200, width, height, screen)
-zetsu_1 = zetsu(1050,500,width,height,screen)
+zetsu_1 = zetsu(1050,200,width,height,screen)
+zetsu_2 = zetsu(1050,300,width,height,screen)
+zetsu_3 = zetsu(1050,400,width,height,screen)
+
 minion_1 = minion(1150,200,width,height,screen)
+minion_2 = minion(1150,300,width,height,screen)
+minion_3 = minion(1150,400,width,height,screen)
+minion_4 = minion(1150,500,width,height,screen)
 
 #sprite groups
 fire_explode_sprite_group = pygame.sprite.Group()
@@ -499,6 +510,17 @@ while run:
         if minion_1_alive:
             score += 1
             minion_1_alive = False
+    
+    # if minion_4.getHealth() > 0:
+    #     minion_4.movements(pygame.time.get_ticks(),enemySpeed)
+    #     minion_4.animate_updater()
+    #     minion_4.draw_character()
+    #     minion_4.water_sprite_update()
+    # else: 
+    #     minion_4.kill()
+    #     if minion_4_alive:
+    #         score += 1
+    #         minion_4_alive = False
         
     #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     pygame.display.update()
