@@ -89,7 +89,7 @@ class character(pygame.sprite.Sprite):
             self.flip_character = True
             self.character_direct = -1
         if down_move:
-            if self.rect.y <= self.height - 100:
+            if self.rect.y <= self.height - 190:
                 dy = 3
         if up_move:
             if self.rect.y >= 150:
