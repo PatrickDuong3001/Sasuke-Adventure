@@ -94,6 +94,18 @@ clock = pygame.time.Clock()
 pygame.font.init()
 background = pygame.image.load("animation/background.jpg").convert_alpha()
 
+#sounds
+pygame.mixer.pre_init(44100, -16, 2, 512) #to improve sound quality
+pygame.mixer.init()
+chidori_sound = pygame.mixer.Sound("sound/chidori.mp3")
+chidori_sound.set_volume(0.1)
+katon_sound = pygame.mixer.Sound("sound/katon.mp3")
+katon_sound.set_volume(0.3)
+swing_sound = pygame.mixer.Sound("sound/swing.wav")
+swing_sound.set_volume(0.05)
+sharingan_sound = pygame.mixer.Sound("sound/sharingan.mp3")
+sharingan_sound.set_volume(0.1)
+
 #player controls
 mana_empty = False
 left_move = False
@@ -170,6 +182,7 @@ while run:
     sasuke.fire_sprite_update()
     
     if sharingan_on and sasuke.mana_left() >= 5:
+        sharingan_sound.play(loops=0, maxtime=0, fade_ms=0)
         sasuke.activateSharingan()
         left_sharingan_group.add(left_sharingan)
         right_sharingan_group.add(right_sharingan)
@@ -197,6 +210,7 @@ while run:
             
         #sasuke actions
         if fire_shoot_stance:
+            pygame.mixer.Channel(0).play(katon_sound)
             if fire_shoot_stance_dur == 20:
                 fire_shoot_stance_dur = 0
                 fire_shoot_stance = False
@@ -209,6 +223,7 @@ while run:
                 jutsu_perform = False          #set false to disable hand sign detection. User has to press c every time to perform a jutsu
                 handsigns.clear()              #clear handsigns list to prepare for next jutsu
         elif chidori_stance:
+            chidori_sound.play()
             if chidori_dur <= 40:
                 sasuke.action_updater(3)
             elif chidori_dur > 40 and chidori_dur < 90: 
@@ -295,6 +310,7 @@ while run:
                 right_move = True
                 facing_right = True
             if event.key == pygame.K_e:
+                swing_sound.play()
                 basic_attack = True
             if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
                 if jutsu_perform == True:
@@ -346,7 +362,7 @@ while run:
             if zetsu_1.getHealth() > 0: 
                 sasuke.takeSwingDamge()       
     
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):    #when sasuke swings minion
+    if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):    #when sasuke swings minion or use chidori
         if basic_attack: 
             if minion_1.getHealth() > 0:
                 minion_1.takeSwingDamage()
