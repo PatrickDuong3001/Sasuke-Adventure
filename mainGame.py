@@ -131,13 +131,13 @@ class handTracker:
                             pygame.display.update(ges5.get_rect())
                     elif len(handsigns) == 3:
                         if myGesture == "one": 
-                            screen.blit(ges1,(750,50))
+                            screen.blit(ges1,(750,580))
                             pygame.display.update(ges1.get_rect())
                         elif myGesture == "two": 
-                            screen.blit(ges2,(750,50))
+                            screen.blit(ges2,(750,580))
                             pygame.display.update(ges2.get_rect())
                         elif myGesture == "three": 
-                            screen.blit(ges3,(750,50))
+                            screen.blit(ges3,(750,580))
                             pygame.display.update(ges3.get_rect())
                         elif myGesture == "four": 
                             screen.blit(ges4,(750,595))
@@ -202,7 +202,6 @@ up_move = False
 down_move = False
 score = 0
 savedScore = 0
-level = 1
 
 #font and letters
 HP_font = pygame.font.Font("font.TTF",20)
@@ -248,17 +247,23 @@ minion_1_alive = True
 minion_2_alive = True
 minion_3_alive = True
 minion_4_alive = True
+minion_5_alive = True
+minion_6_alive = True
+minion_7_alive = True
 
 #players and enemies creation
 sasuke = character(20, 200, width, height, screen)
-zetsu_1 = zetsu(1050,200,width,height,screen)
-zetsu_2 = zetsu(1050,300,width,height,screen)
-zetsu_3 = zetsu(1050,400,width,height,screen)
+zetsu_1 = zetsu(1215,235,width,height,screen)
+zetsu_2 = zetsu(1215,335,width,height,screen)
+zetsu_3 = zetsu(1215,435,width,height,screen)
 
 minion_1 = minion(1150,200,width,height,screen)
 minion_2 = minion(1150,300,width,height,screen)
 minion_3 = minion(1150,400,width,height,screen)
-minion_4 = minion(1150,500,width,height,screen)
+minion_4 = minion(1150,200,width,height,screen)
+minion_5 = minion(1150,300,width,height,screen)
+minion_6 = minion(1150,400,width,height,screen)
+minion_7 = minion(1150,500,width,height,screen)
 
 #sprite groups
 fire_explode_sprite_group = pygame.sprite.Group()
@@ -390,6 +395,7 @@ while run:
                 jutsu_perform = False
                 handsigns.clear()
         else: 
+            jutsu_perform = False
             handsigns.clear()          #the user performs wrong handsigns, so clear handsigns list
                 
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$keyboard detection$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -450,81 +456,296 @@ while run:
     right_sharingan_group.draw(screen)
     right_sharingan_group.update()
         
-    if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False):   #when zetsu gets hit by fire
-        fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
-        zetsu_1.enemyTakeFireDamage()
-        sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
-    
-    if pygame.sprite.spritecollide(minion_1,sasuke.getFireSprite(),False):  #when minion gets hit by fire
-        fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
-        minion_1.takeFireDamage()
-        sasuke.explicitFireKill()   #after explosion, kill the fire sprite explicitly
-    
-    
-    if pygame.sprite.spritecollide(sasuke,minion_1.getWaterSprite(),False):  #when sasuke gets hit by water
-        try:
-            water_explode_sprite_group.add(explosion(minion_1.getWaterX()-10,minion_1.getWaterY(),2))
-            minion_1.explicitWaterKill()
-        except:
-            water_explode_sprite_group.empty()
-        finally:
-            sasuke.takeWaterDamage()
-        
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):    #when sasuke swings zetsu or use chidori
-        if basic_attack:
-            if zetsu_1.getHealth() > 0:
-                zetsu_1.enemyTakeSwingDamage()
+    if score >= 1:                                                               #level 2
+        if pygame.sprite.spritecollide(minion_1,sasuke.getFireSprite(),False) and minion_1_alive:  #when minion 1 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_1.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_1.getWaterSprite(),False): #when sasuke gets hit by water of minion 1
+            try:
+                water_explode_sprite_group.add(explosion(minion_1.getWaterX()-10,minion_1.getWaterY(),2))
+                minion_1.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):              #when sasuke swings minion or use chidori on minion 1
+            if basic_attack: 
+                if minion_1.getHealth() > 0:
+                    minion_1.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 1
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_1.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_1.getWaterX()+50,minion_1.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_1.explicitWaterKill()
+        if minion_1.getHealth() > 0:                                            #check minion 1 state
+            minion_1.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_1.animate_updater()
+            minion_1.draw_character()
+            minion_1.water_sprite_update()
         else: 
-            if zetsu_1.getHealth() > 0: 
-                sasuke.takeSwingDamge()       
-    
-    if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):    #when sasuke swings minion or use chidori
-        if basic_attack: 
-            if minion_1.getHealth() > 0:
-                minion_1.takeSwingDamage()
-    
-    if sasuke.getFire() != None:       #when fire hits water
-        if pygame.sprite.spritecollide(sasuke.getFire(),minion_1.getWaterSprite(),False):
-            water_explode_sprite_group.add(explosion(minion_1.getWaterX()+50,minion_1.getWaterY(),2))
-            sasuke.explicitFireKill()
-            minion_1.explicitWaterKill()
-            
-    #$$$$$$$$$$$$$$$$$$$$$$$$Enemies states and controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    if zetsu_1.getHealth() > 0:
-        zetsu_1.animate_updater()
-        zetsu_1.move_towards_player(sasuke,enemySpeed)
-        zetsu_1.draw_character()
-    else:
-        zetsu_1.kill()
-        if zetsu_1_alive:
-            score += 1
-            zetsu_1_alive = False
+            minion_1.kill()
+            if minion_1_alive:
+                score += 1
+                minion_1_alive = False
         
-    if minion_1.getHealth() > 0:
-        minion_1.movements(pygame.time.get_ticks(),enemySpeed)
-        minion_1.animate_updater()
-        minion_1.draw_character()
-        minion_1.water_sprite_update()
-    else: 
-        minion_1.kill()
-        if minion_1_alive:
-            score += 1
-            minion_1_alive = False
-    
-    # if minion_4.getHealth() > 0:
-    #     minion_4.movements(pygame.time.get_ticks(),enemySpeed)
-    #     minion_4.animate_updater()
-    #     minion_4.draw_character()
-    #     minion_4.water_sprite_update()
-    # else: 
-    #     minion_4.kill()
-    #     if minion_4_alive:
-    #         score += 1
-    #         minion_4_alive = False
+        if pygame.sprite.spritecollide(minion_2,sasuke.getFireSprite(),False) and minion_2_alive:  #when minion 2 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_2.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_2.getWaterSprite(),False): #when sasuke gets hit by water of minion 2
+            try:
+                water_explode_sprite_group.add(explosion(minion_2.getWaterX()-10,minion_2.getWaterY(),2))
+                minion_2.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_2):              #when sasuke swings minion or use chidori on minion 2
+            if basic_attack: 
+                if minion_2.getHealth() > 0:
+                    minion_2.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 2
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_2.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_2.getWaterX()+50,minion_2.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_2.explicitWaterKill()
+        if minion_2.getHealth() > 0:                                            #check minion 2 state
+            minion_2.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_2.animate_updater()
+            minion_2.draw_character()
+            minion_2.water_sprite_update()
+        else: 
+            minion_2.kill()
+            if minion_2_alive:
+                score += 1
+                minion_2_alive = False
         
-    #$$$$$$$$$$$$$$$$$$$$$$$$Map control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        if pygame.sprite.spritecollide(minion_3,sasuke.getFireSprite(),False) and minion_3_alive:  #when minion 3 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_3.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_3.getWaterSprite(),False): #when sasuke gets hit by water of minion 3
+            try:
+                water_explode_sprite_group.add(explosion(minion_3.getWaterX()-10,minion_3.getWaterY(),2))
+                minion_3.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_3):              #when sasuke swings minion or use chidori on minion 3
+            if basic_attack: 
+                if minion_3.getHealth() > 0:
+                    minion_3.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 3
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_3.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_3.getWaterX()+50,minion_3.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_3.explicitWaterKill()
+        if minion_3.getHealth() > 0:                                            #check minion 3 state
+            minion_3.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_3.animate_updater()
+            minion_3.draw_character()
+            minion_3.water_sprite_update()
+        else: 
+            minion_3.kill()
+            if minion_3_alive:
+                score += 1
+                minion_3_alive = False
+                
+        if pygame.sprite.spritecollide(zetsu_2,sasuke.getFireSprite(),False) and zetsu_2_alive:   #when zetsu 2 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            zetsu_2.enemyTakeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_2):              #when sasuke swings zetsu or use chidori on zetsu 2
+            if basic_attack:
+                if zetsu_2.getHealth() > 0:
+                    zetsu_2.enemyTakeSwingDamage()
+            else: 
+                if zetsu_2.getHealth() > 0: 
+                    sasuke.takeSwingDamge()  
+        if zetsu_2.getHealth() > 0:                                             #check zetsu 2 state
+            zetsu_2.animate_updater()
+            zetsu_2.move_towards_player(sasuke,enemySpeed)
+            zetsu_2.draw_character()
+        else:
+            zetsu_2.kill()
+            if zetsu_2_alive:
+                score += 1
+                zetsu_2_alive = False              
+
+    elif score >= 4:                                                            #level 3
+        if pygame.sprite.spritecollide(minion_4,sasuke.getFireSprite(),False) and minion_4_alive:  #when minion 4 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_4.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_4.getWaterSprite(),False): #when sasuke gets hit by water of minion 4
+            try:
+                water_explode_sprite_group.add(explosion(minion_4.getWaterX()-10,minion_4.getWaterY(),2))
+                minion_4.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_4):              #when sasuke swings minion or use chidori on minion 4
+            if basic_attack: 
+                if minion_4.getHealth() > 0:
+                    minion_4.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 4
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_4.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_4.getWaterX()+50,minion_4.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_4.explicitWaterKill()
+        if minion_4.getHealth() > 0:                                            #check minion 4 state
+            minion_4.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_4.animate_updater()
+            minion_4.draw_character()
+            minion_4.water_sprite_update()
+        else: 
+            minion_4.kill()
+            if minion_4_alive:
+                score += 1
+                minion_4_alive = False
+                
+        if pygame.sprite.spritecollide(minion_5,sasuke.getFireSprite(),False) and minion_5_alive:  #when minion 5 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_5.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_5.getWaterSprite(),False): #when sasuke gets hit by water
+            try:
+                water_explode_sprite_group.add(explosion(minion_5.getWaterX()-10,minion_5.getWaterY(),2))
+                minion_5.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_5):              #when sasuke swings minion or use chidori on minion 5
+            if basic_attack: 
+                if minion_5.getHealth() > 0:
+                    minion_5.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 5
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_5.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_5.getWaterX()+50,minion_5.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_5.explicitWaterKill()
+        if minion_5.getHealth() > 0:                                            #check minion 5 state
+            minion_5.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_5.animate_updater()
+            minion_5.draw_character()
+            minion_5.water_sprite_update()
+        else: 
+            minion_5.kill()
+            if minion_5_alive:
+                score += 1
+                minion_5_alive = False
+        
+        if pygame.sprite.spritecollide(minion_6,sasuke.getFireSprite(),False) and minion_6_alive:  #when minion 6 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_6.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_6.getWaterSprite(),False): #when sasuke gets hit by water of minion 6
+            try:
+                water_explode_sprite_group.add(explosion(minion_6.getWaterX()-10,minion_6.getWaterY(),2))
+                minion_6.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_6):              #when sasuke swings minion or use chidori on minion 6
+            if basic_attack: 
+                if minion_6.getHealth() > 0:
+                    minion_6.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 6
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_6.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_6.getWaterX()+50,minion_6.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_6.explicitWaterKill()
+        if minion_6.getHealth() > 0:                                            #check minion 6 state
+            minion_6.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_6.animate_updater()
+            minion_6.draw_character()
+            minion_6.water_sprite_update()
+        else: 
+            minion_6.kill()
+            if minion_6_alive:
+                score += 1
+                minion_6_alive = False
+                
+        if pygame.sprite.spritecollide(minion_7,sasuke.getFireSprite(),False) and minion_7_alive:  #when minion 7 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            minion_7.takeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.spritecollide(sasuke,minion_7.getWaterSprite(),False): #when sasuke gets hit by water of minion 6
+            try:
+                water_explode_sprite_group.add(explosion(minion_7.getWaterX()-10,minion_7.getWaterY(),2))
+                minion_7.explicitWaterKill()
+            except:
+                water_explode_sprite_group.empty()
+            finally:
+                sasuke.takeWaterDamage()     
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_7):              #when sasuke swings minion or use chidori on minion 6
+            if basic_attack: 
+                if minion_7.getHealth() > 0:
+                    minion_7.takeSwingDamage()
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 6
+            if pygame.sprite.spritecollide(sasuke.getFire(),minion_7.getWaterSprite(),False):
+                water_explode_sprite_group.add(explosion(minion_7.getWaterX()+50,minion_7.getWaterY(),2))
+                sasuke.explicitFireKill()
+                minion_7.explicitWaterKill()
+        if minion_7.getHealth() > 0:                                            #check minion 6 state
+            minion_7.movements(pygame.time.get_ticks(),enemySpeed)
+            minion_7.animate_updater()
+            minion_7.draw_character()
+            minion_7.water_sprite_update()
+        else: 
+            minion_7.kill()
+            if minion_7_alive:
+                score += 1
+                minion_7_alive = False
+        
+        if pygame.sprite.spritecollide(zetsu_3,sasuke.getFireSprite(),False) and zetsu_3_alive:   #when zetsu 3 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            zetsu_3.enemyTakeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_3):              #when sasuke swings zetsu or use chidori on zetsu 3
+            if basic_attack:
+                if zetsu_3.getHealth() > 0:
+                    zetsu_3.enemyTakeSwingDamage()
+            else: 
+                if zetsu_3.getHealth() > 0: 
+                    sasuke.takeSwingDamge()  
+        if zetsu_3.getHealth() > 0:                                             #check zetsu 3 state
+            zetsu_3.animate_updater()
+            zetsu_3.move_towards_player(sasuke,enemySpeed)
+            zetsu_3.draw_character()
+        else:
+            zetsu_3.kill()
+            if zetsu_3_alive:
+                score += 1
+                zetsu_3_alive = False    
+
+    else:                                                                       #level 
+        if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False) and zetsu_1_alive:   #when zetsu 1 gets hit by fire
+            fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
+            zetsu_1.enemyTakeFireDamage()
+            sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke, zetsu_1):              #when sasuke swings zetsu or use chidori on zetsu 1
+            if basic_attack:
+                if zetsu_1.getHealth() > 0:
+                    zetsu_1.enemyTakeSwingDamage()
+            else: 
+                if zetsu_1.getHealth() > 0: 
+                    sasuke.takeSwingDamge()  
+        if zetsu_1.getHealth() > 0:                                             #check zetsu 1 state
+            zetsu_1.animate_updater()
+            zetsu_1.move_towards_player(sasuke,enemySpeed)
+            zetsu_1.draw_character()
+        else:
+            zetsu_1.kill()
+            if zetsu_1_alive:
+                score += 1
+                zetsu_1_alive = False
     pygame.display.update()
-print(handsigns)
 pygame.quit()
 sys.exit()
 
