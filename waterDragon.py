@@ -10,10 +10,12 @@ class waterDragon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.dragon_direct = direction
+        self.over = False
 
     def update(self):
         self.rect.x -= (self.dragon_direct * self.speed)
         if self.rect.right < 0 or self.rect.left > self.width:
+            self.over = True
             self.kill()
     
     def getDragonX(self):   #get x coordinate of the water dragon
@@ -24,3 +26,6 @@ class waterDragon(pygame.sprite.Sprite):
     
     def explicitKill(self):   #kill the water dragon
         self.kill()
+    
+    def getStatus(self):
+        return self.over

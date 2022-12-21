@@ -462,13 +462,10 @@ while run:
             minion_1.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_1.getWaterSprite(),False): #when sasuke gets hit by water of minion 1
-            try:
                 water_explode_sprite_group.add(explosion(minion_1.getWaterX()-10,minion_1.getWaterY(),2))
                 minion_1.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
-                sasuke.takeWaterDamage()     
+                sasuke.takeWaterDamage()    
+                minion_1.setWaterCount() 
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_1):              #when sasuke swings minion or use chidori on minion 1
             if basic_attack: 
                 if minion_1.getHealth() > 0:
@@ -494,13 +491,10 @@ while run:
             minion_2.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_2.getWaterSprite(),False): #when sasuke gets hit by water of minion 2
-            try:
                 water_explode_sprite_group.add(explosion(minion_2.getWaterX()-10,minion_2.getWaterY(),2))
                 minion_2.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
                 sasuke.takeWaterDamage()     
+                minion_2.setWaterCount()
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_2):              #when sasuke swings minion or use chidori on minion 2
             if basic_attack: 
                 if minion_2.getHealth() > 0:
@@ -526,13 +520,10 @@ while run:
             minion_3.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_3.getWaterSprite(),False): #when sasuke gets hit by water of minion 3
-            try:
                 water_explode_sprite_group.add(explosion(minion_3.getWaterX()-10,minion_3.getWaterY(),2))
                 minion_3.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
                 sasuke.takeWaterDamage()     
+                minion_3.setWaterCount()
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_3):              #when sasuke swings minion or use chidori on minion 3
             if basic_attack: 
                 if minion_3.getHealth() > 0:
@@ -580,13 +571,10 @@ while run:
             minion_4.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_4.getWaterSprite(),False): #when sasuke gets hit by water of minion 4
-            try:
                 water_explode_sprite_group.add(explosion(minion_4.getWaterX()-10,minion_4.getWaterY(),2))
                 minion_4.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
                 sasuke.takeWaterDamage()     
+                minion_4.setWaterCount()
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_4):              #when sasuke swings minion or use chidori on minion 4
             if basic_attack: 
                 if minion_4.getHealth() > 0:
@@ -612,13 +600,10 @@ while run:
             minion_5.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_5.getWaterSprite(),False): #when sasuke gets hit by water
-            try:
                 water_explode_sprite_group.add(explosion(minion_5.getWaterX()-10,minion_5.getWaterY(),2))
                 minion_5.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
-                sasuke.takeWaterDamage()     
+                sasuke.takeWaterDamage()   
+                minion_5.setWaterCount()  
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_5):              #when sasuke swings minion or use chidori on minion 5
             if basic_attack: 
                 if minion_5.getHealth() > 0:
@@ -644,13 +629,10 @@ while run:
             minion_6.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_6.getWaterSprite(),False): #when sasuke gets hit by water of minion 6
-            try:
                 water_explode_sprite_group.add(explosion(minion_6.getWaterX()-10,minion_6.getWaterY(),2))
                 minion_6.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
                 sasuke.takeWaterDamage()     
+                minion_6.setWaterCount()
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_6):              #when sasuke swings minion or use chidori on minion 6
             if basic_attack: 
                 if minion_6.getHealth() > 0:
@@ -676,13 +658,10 @@ while run:
             minion_7.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
         if pygame.sprite.spritecollide(sasuke,minion_7.getWaterSprite(),False): #when sasuke gets hit by water of minion 6
-            try:
                 water_explode_sprite_group.add(explosion(minion_7.getWaterX()-10,minion_7.getWaterY(),2))
                 minion_7.explicitWaterKill()
-            except:
-                water_explode_sprite_group.empty()
-            finally:
                 sasuke.takeWaterDamage()     
+                minion_7.setWaterCount()
         if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_7):              #when sasuke swings minion or use chidori on minion 6
             if basic_attack: 
                 if minion_7.getHealth() > 0:
