@@ -184,6 +184,8 @@ sharingan_sound = pygame.mixer.Sound("sound/sharingan.mp3")
 sharingan_sound.set_volume(0.1)
 
 #images
+intro = pygame.image.load("animation/intro.jpg").convert_alpha()
+start = pygame.image.load("animation/start.png").convert_alpha()
 ges1 = pygame.image.load("gestures/ges1.png").convert_alpha()
 ges2 = pygame.image.load("gestures/ges2.png").convert_alpha()
 ges3 = pygame.image.load("gestures/ges3.png").convert_alpha()
@@ -205,12 +207,14 @@ up_move = False
 down_move = False
 score = 0
 music_on = True
+intro_screen = True
 
 #font and letters
 HP_font = pygame.font.Font("font.TTF",20)
 HP = HP_font.render("HP",True,"Dark Green")
 MANA = HP_font.render("Chakra",True,"Blue")
 Score = HP_font.render("Score:",True,"Red")
+Credit = HP_font.render("Credit: Patrick Duong",True,"Red")
 
 #basic attack
 basic_attack = False
@@ -286,6 +290,20 @@ my_thread.start()
 run = True
 pygame.mixer.Channel(2).play(background_sound,-1)
 while run:
+    while intro_screen:
+        screen.blit(intro,(0,0))
+        screen.blit(Credit,(50,10))
+        startButton = screen.blit(start,(480,300))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if startButton.collidepoint(event.pos):
+                    pygame.draw.rect(screen, (0,0,0), pygame.Rect(0, 575, 1200, 100))
+                    intro_screen = False 
+        pygame.display.update()
+        
     clock.tick(60)
     screen.blit(background,(0,0))
     screen.blit(HP,(5,5))
@@ -440,7 +458,7 @@ while run:
                 swing_sound.play()
                 basic_attack = True
             if event.key == pygame.K_c:    #press c to start recording handsigns. Press again to cancel
-                pygame.draw.rect(screen, (0,0,0), pygame.Rect(0, 580, 1200, 100))
+                pygame.draw.rect(screen, (0,0,0), pygame.Rect(0, 575, 1200, 100))
                 if jutsu_perform == True:
                     jutsu_perform = False
                     handsigns.clear()
