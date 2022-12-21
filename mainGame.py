@@ -456,7 +456,7 @@ while run:
     right_sharingan_group.draw(screen)
     right_sharingan_group.update()
         
-    if score >= 1:                                                               #level 2
+    if score >= 1 and score < 5:                                                               #level 2
         if pygame.sprite.spritecollide(minion_1,sasuke.getFireSprite(),False) and minion_1_alive:  #when minion 1 gets hit by fire
             fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
             minion_1.takeFireDamage()
@@ -574,7 +574,7 @@ while run:
                 score += 1
                 zetsu_2_alive = False              
 
-    elif score >= 4:                                                            #level 3
+    elif score >= 5:                                                            #level 3
         if pygame.sprite.spritecollide(minion_4,sasuke.getFireSprite(),False) and minion_4_alive:  #when minion 4 gets hit by fire
             fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
             minion_4.takeFireDamage()
@@ -724,7 +724,7 @@ while run:
                 score += 1
                 zetsu_3_alive = False    
 
-    else:                                                                       #level 
+    elif score == 0:                                                                       #level 
         if pygame.sprite.spritecollide(zetsu_1,sasuke.getFireSprite(),False) and zetsu_1_alive:   #when zetsu 1 gets hit by fire
             fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
             zetsu_1.enemyTakeFireDamage()
