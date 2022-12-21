@@ -25,6 +25,7 @@ class minion(pygame.sprite.Sprite):
         
         self.water = None
         self.water_sprite_group = pygame.sprite.Group()
+        self.count_water = 0
         
         for animation in animation_types:
             temp = []
@@ -64,9 +65,12 @@ class minion(pygame.sprite.Sprite):
     def movements(self, new_time, speed): 
         self.speed = speed
         self.action_updater(0)       
-        if (new_time - self.original_time) % 1177 == 0: 
+        if (new_time - self.original_time) % 300 == 0 and self.count_water == 0: 
             pygame.mixer.Channel(1).play(self.shoot_sound)
             self.waterJutsu()
+            self.count_water += 1
+        if self.water != None and self.water.getStatus():
+            self.count_water = 0    
         
     def water_sprite_update(self):
         self.water_sprite_group.update()
@@ -100,3 +104,6 @@ class minion(pygame.sprite.Sprite):
     
     def printHealth(self):
         print(self.health)
+    
+    def setWaterCount(self):
+        self.count_water = 0
