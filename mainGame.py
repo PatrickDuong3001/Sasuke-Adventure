@@ -183,7 +183,7 @@ swing_sound.set_volume(0.05)
 sharingan_sound = pygame.mixer.Sound("sound/sharingan.mp3")
 sharingan_sound.set_volume(0.1)
 
-#gestures
+#images
 ges1 = pygame.image.load("gestures/ges1.png").convert_alpha()
 ges2 = pygame.image.load("gestures/ges2.png").convert_alpha()
 ges3 = pygame.image.load("gestures/ges3.png").convert_alpha()
@@ -192,6 +192,9 @@ ges5 = pygame.image.load("gestures/ges5.png").convert_alpha()
 fireball = pygame.image.load("animation/fire2.png").convert_alpha()
 chidori = pygame.image.load("animation/chidori.png").convert_alpha()
 wrong = pygame.image.load("animation/wrong.png").convert_alpha()
+sfx = pygame.image.load("animation/sfx.png").convert_alpha()
+sfx_disabled = pygame.image.load("animation/sfx_disabled.png").convert_alpha()
+sfx_rect = None
 
 #player controls
 mana_empty = False
@@ -201,7 +204,7 @@ fire_shoot = False
 up_move = False
 down_move = False
 score = 0
-savedScore = 0
+music_on = True
 
 #font and letters
 HP_font = pygame.font.Font("font.TTF",20)
@@ -289,11 +292,14 @@ while run:
     screen.blit(MANA,(5,40))
     screen.blit(Score,(5,70))
     scoreText = HP_font.render(f"{score}",True,"Red")
-    # if score != savedScore:
-    #     scoreTextTemp = HP_font.render(f"{score}",True,(0,0,0))
-    #     screen.blit(scoreTextTemp,(100,70))
-    #     savedScore = score
     screen.blit(scoreText, (100,70))
+    
+    if music_on:
+        sfx_rect = screen.blit(sfx,(1150,5))
+        background_sound.set_volume(0.05)
+    else:
+        sfx_rect = screen.blit(sfx_disabled,(1150,5))
+        background_sound.set_volume(0)
     
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$player and enemies control$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     sasuke.update()
@@ -444,7 +450,13 @@ while run:
                 if mana_empty == False:
                     sharingan_on = True
                     enemySpeed = 2
-                    
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if sfx_rect.collidepoint(event.pos) and music_on == True:
+                music_on = False
+            elif sfx_rect.collidepoint(event.pos) and music_on == False:
+                music_on = True
+                 
     #$$$$$$$$$$$$$$$$$$$$$$$explosion and sprite collision controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     fire_explode_sprite_group.draw(screen)
     fire_explode_sprite_group.update()
