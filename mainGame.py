@@ -661,6 +661,8 @@ while run:
             if minion_5_alive:
                 score += 1
                 minion_5_alive = False
+        if score == 10:  #won the game
+            end_screen = True
         
         if pygame.sprite.spritecollide(minion_6,sasuke.getFireSprite(),False) and minion_6_alive:  #when minion 6 gets hit by fire
             fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
