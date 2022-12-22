@@ -32,7 +32,7 @@ class character(pygame.sprite.Sprite):
             temp = []
             for i in range(len(os.listdir(f'animation/{animation}'))):
                 img = pygame.image.load(f'animation/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(2*img.get_width()), int(2*img.get_height())))
+                img = pygame.transform.scale(img, (int(1.5*img.get_width()), int(1.5*img.get_height())))
                 temp.append(img)
             self.animation_list.append(temp)
         self.image = self.animation_list[self.action_type][self.f_ind]

@@ -30,7 +30,7 @@ class minion(pygame.sprite.Sprite):
             temp = []
             for i in range(len(os.listdir(f'animation/minion/{animation}'))):
                 img = pygame.image.load(f'animation/minion/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (int(2.0*img.get_width()), int(2.0*img.get_height())))
+                img = pygame.transform.scale(img, (int(1.6*img.get_width()), int(1.6*img.get_height())))
                 temp.append(img)
             self.animation_list.append(temp)
         self.image = self.animation_list[self.action_type][self.f_ind]
