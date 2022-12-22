@@ -12,7 +12,6 @@ class minion(pygame.sprite.Sprite):
         self.shoot_sound = pygame.mixer.Sound("sound/gun.wav")
         self.shoot_sound.set_volume(0.05)
         
-        self.alive = True
         self.health = 200
         self.max_health = self.health
         self.update_time = pygame.time.get_ticks()
@@ -95,15 +94,11 @@ class minion(pygame.sprite.Sprite):
     def getHealth(self):
         return self.health 
 
-
     def takeFireDamage(self):
         self.health -= 100
     
     def takeSwingDamage(self):
         self.health -= 2
-    
-    def printHealth(self):
-        print(self.health)
     
     def setWaterCount(self):
         self.count_water = 0

@@ -80,7 +80,6 @@ class handTracker:
                 unknownGesture=self.findDistances(handData[0])
                 myGesture=self.findGesture(unknownGesture,self.knownGestures,self.keyPoints,self.gestNames,10)
                 if jutsu_perform == True and (myGesture != 'Unknown') and len(handsigns) < 4 and (myGesture not in handsigns):
-                    print(myGesture)
                     if len(handsigns) == 0: 
                         if myGesture == "one": 
                             screen.blit(ges1,(180,580))
@@ -186,6 +185,8 @@ sharingan_sound.set_volume(0.1)
 #images
 intro = pygame.image.load("animation/intro.jpg").convert_alpha()
 start = pygame.image.load("animation/start.png").convert_alpha()
+end = pygame.image.load("animation/end.jpg").convert_alpha()
+mainButton = pygame.image.load("animation/main.png").convert_alpha()
 ges1 = pygame.image.load("gestures/ges1.png").convert_alpha()
 ges2 = pygame.image.load("gestures/ges2.png").convert_alpha()
 ges3 = pygame.image.load("gestures/ges3.png").convert_alpha()
@@ -208,13 +209,17 @@ down_move = False
 score = 0
 music_on = True
 intro_screen = True
+end_screen = False
 
 #font and letters
 HP_font = pygame.font.Font("font.TTF",20)
 HP = HP_font.render("HP",True,"Dark Green")
 MANA = HP_font.render("Chakra",True,"Blue")
 Score = HP_font.render("Score:",True,"Red")
-Credit = HP_font.render("Credit: Patrick Duong",True,"Red")
+Credit = HP_font.render("Developer: Patrick Duong",True,"Red")
+tryAgain = HP_font.render("You failed. Try again!",True,"#B43757")
+win = HP_font.render("You won!",True,"Yellow")
+win2 = HP_font.render("Thank you for playing!",True,"Yellow")
 
 #basic attack
 basic_attack = False
@@ -239,12 +244,8 @@ right_sharingan = Sharingan(650,350)
 
 #enemies controls
 enemySpeed = 3
-enemyAttack = False
 sasukeAttack = False
 idle = True
-water_shoot = False
-water_stance = False 
-water_dur = 0
 
 #enemies states
 zetsu_1_alive = True
@@ -289,10 +290,10 @@ my_thread.start()
 
 run = True
 pygame.mixer.Channel(2).play(background_sound,-1)
-while run:
+while run:    
     while intro_screen:
         screen.blit(intro,(0,0))
-        screen.blit(Credit,(50,10))
+        screen.blit(Credit,(29,10))
         startButton = screen.blit(start,(480,300))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -402,6 +403,8 @@ while run:
             sasuke.action_updater(0)
         if not chidori_stance:
             sasuke.character_movements(left_move, right_move,down_move,up_move)
+    else: 
+        end_screen = True
 
     #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$hand signs detection controls$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if len(handsigns) == 4 and jutsu_perform == True:                 
@@ -505,6 +508,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_1.getWaterX()+50,minion_1.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_1.explicitWaterKill()
+                minion_1.setWaterCount()
         if minion_1.getHealth() > 0:                                            #check minion 1 state
             minion_1.movements(pygame.time.get_ticks(),enemySpeed)
             minion_1.animate_updater()
@@ -534,6 +538,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_2.getWaterX()+50,minion_2.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_2.explicitWaterKill()
+                minion_2.setWaterCount()
         if minion_2.getHealth() > 0:                                            #check minion 2 state
             minion_2.movements(pygame.time.get_ticks(),enemySpeed)
             minion_2.animate_updater()
@@ -563,6 +568,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_3.getWaterX()+50,minion_3.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_3.explicitWaterKill()
+                minion_3.setWaterCount()
         if minion_3.getHealth() > 0:                                            #check minion 3 state
             minion_3.movements(pygame.time.get_ticks(),enemySpeed)
             minion_3.animate_updater()
@@ -614,6 +620,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_4.getWaterX()+50,minion_4.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_4.explicitWaterKill()
+                minion_4.setWaterCount()
         if minion_4.getHealth() > 0:                                            #check minion 4 state
             minion_4.movements(pygame.time.get_ticks(),enemySpeed)
             minion_4.animate_updater()
@@ -643,6 +650,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_5.getWaterX()+50,minion_5.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_5.explicitWaterKill()
+                minion_5.setWaterCount()
         if minion_5.getHealth() > 0:                                            #check minion 5 state
             minion_5.movements(pygame.time.get_ticks(),enemySpeed)
             minion_5.animate_updater()
@@ -672,6 +680,7 @@ while run:
                 water_explode_sprite_group.add(explosion(minion_6.getWaterX()+50,minion_6.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_6.explicitWaterKill()
+                minion_6.setWaterCount()
         if minion_6.getHealth() > 0:                                            #check minion 6 state
             minion_6.movements(pygame.time.get_ticks(),enemySpeed)
             minion_6.animate_updater()
@@ -687,21 +696,22 @@ while run:
             fire_explode_sprite_group.add(explosion(sasuke.getFireX()+50,sasuke.getFireY(),1))
             minion_7.takeFireDamage()
             sasuke.explicitFireKill()                                           #after explosion, kill the fire sprite explicitly
-        if pygame.sprite.spritecollide(sasuke,minion_7.getWaterSprite(),False): #when sasuke gets hit by water of minion 6
+        if pygame.sprite.spritecollide(sasuke,minion_7.getWaterSprite(),False): #when sasuke gets hit by water of minion 7
                 water_explode_sprite_group.add(explosion(minion_7.getWaterX()-10,minion_7.getWaterY(),2))
                 minion_7.explicitWaterKill()
                 sasuke.takeWaterDamage()     
                 minion_7.setWaterCount()
-        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_7):              #when sasuke swings minion or use chidori on minion 6
+        if pygame.sprite.collide_rect_ratio(1.2)(sasuke,minion_7):              #when sasuke swings minion or use chidori on minion 7
             if basic_attack: 
                 if minion_7.getHealth() > 0:
                     minion_7.takeSwingDamage()
-        if sasuke.getFire() != None:                                            #when fire hits water of minion 6
+        if sasuke.getFire() != None:                                            #when fire hits water of minion 7
             if pygame.sprite.spritecollide(sasuke.getFire(),minion_7.getWaterSprite(),False):
                 water_explode_sprite_group.add(explosion(minion_7.getWaterX()+50,minion_7.getWaterY(),2))
                 sasuke.explicitFireKill()
                 minion_7.explicitWaterKill()
-        if minion_7.getHealth() > 0:                                            #check minion 6 state
+                minion_7.setWaterCount()
+        if minion_7.getHealth() > 0:                                            #check minion 7 state
             minion_7.movements(pygame.time.get_ticks(),enemySpeed)
             minion_7.animate_updater()
             minion_7.draw_character()
@@ -754,7 +764,72 @@ while run:
             if zetsu_1_alive:
                 score += 1
                 zetsu_1_alive = False
+                
+    while end_screen: 
+        screen.blit(end,(0,0))
+        mainButtonRect = screen.blit(mainButton,(540,565))
+        if sasuke.checkAlive() == False:
+            screen.blit(tryAgain,(450,70))
+        elif sasuke.checkAlive() == True:
+            screen.blit(win,(550,40))
+            screen.blit(win2,(450,80))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if mainButtonRect.collidepoint(event.pos):
+                    end_screen = False
+                    intro_screen = True 
+                    
+                    #reset all control constants
+                    score = 0
+                    handsigns.clear()
+                    jutsu_perform = False
+                    fire_shoot = False
+                    fire_shoot_stance = False
+                    basic_attack_dur = 0
+                    fire_shoot_stance_dur = 0
+                    sharingan_on = False
+                    mana_empty = False
+                    
+                    chidori_stance = False
+                    chidori_dur = 0
+                    facing_right = True
+                    chidori_right = False
+                    chidori_left = False
+                    
+                    left_move = False
+                    right_move = False
+                    up_move = False
+                    down_move = False
+                    
+                    enemySpeed = 3
+                    sasukeAttack = False
+                    idle = True
+                    
+                    zetsu_1_alive = True
+                    zetsu_2_alive = True
+                    zetsu_3_alive = True
+                    minion_1_alive = True
+                    minion_2_alive = True
+                    minion_3_alive = True
+                    minion_4_alive = True
+                    minion_5_alive = True
+                    minion_6_alive = True
+                    minion_7_alive = True
+                    sasuke = character(20, 200, width, height, screen)
+                    zetsu_1 = zetsu(1215,235,width,height,screen)
+                    zetsu_2 = zetsu(1215,335,width,height,screen)
+                    zetsu_3 = zetsu(1215,435,width,height,screen)
+                    minion_1 = minion(1150,200,width,height,screen)
+                    minion_2 = minion(1150,300,width,height,screen)
+                    minion_3 = minion(1150,400,width,height,screen)
+                    minion_4 = minion(1150,200,width,height,screen)
+                    minion_5 = minion(1150,300,width,height,screen)
+                    minion_6 = minion(1150,400,width,height,screen)
+                    minion_7 = minion(1150,500,width,height,screen)
+        pygame.display.update()
     pygame.display.update()
 pygame.quit()
 sys.exit()
-
