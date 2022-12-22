@@ -9,7 +9,6 @@ class character(pygame.sprite.Sprite):
         self.height = height
         self.screen = screen
         
-        self.alive = True
         self.health = 10000
         self.max_health = self.health
         self.mana = 1000
@@ -123,7 +122,9 @@ class character(pygame.sprite.Sprite):
         self.screen.blit(pygame.transform.flip(self.image, self.flip_character, False), self.rect)
     
     def checkAlive(self): 
-        return self.alive
+        if self.health > 0:
+            return True 
+        return False
     
     def getFireSprite(self):       #return the fire ball sprite. Used for collision detection with enemies
         return self.fire_sprite_group
@@ -139,10 +140,10 @@ class character(pygame.sprite.Sprite):
         self.fire = None
     
     def takeSwingDamge(self):
-        self.health -= 2
+        self.health -= 10
     
     def takeWaterDamage(self):
-        self.health -= 100
+        self.health -= 500
     
     def health_bar_draw(self):
         #calculate health ratio

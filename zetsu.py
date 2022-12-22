@@ -10,7 +10,6 @@ class zetsu(pygame.sprite.Sprite):
         self.height = height
         self.screen = screen
         
-        self.alive = True
         self.health = 100
         self.update_time = pygame.time.get_ticks()
         self.action_type = 0
