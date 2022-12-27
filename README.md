@@ -5,13 +5,15 @@ Features:
 - A simple AI for NPC to chase the player
 - A simple AI to detect the user's handsigns to control Sasuke. 
 - Music + Visuals + Score Tracker system 
+- Health and Mana bars 
 
 How to use:
 - Open the game '.exe' file
 - Start the game
 - Use W, A, S, D to control Sasuke's movements
-- When there's enough mana, the player can activate Sharingan by pressing R. 
-  Sharingan helps slow down enemies' movements at the cost of reducing mana overtime.
+- Press E for Sasuke to wing
+- When there's enough mana, the player can activate Sharingan by pressing R
+  Sharingan helps slow down enemies' movements at the cost of reducing mana overtime
 - To perform a sequence of 4 handsign:
   - Press C and show 4 handsigns. 
   - For each handsign, show your hand to the laptop's camera for at least 2 seconds before showing a new sign
