@@ -1,4 +1,4 @@
-# Naruto_Game
+# Sasuke-Advanture Game
 This game is developed in Python. The simple AI for NPC characters and hand gesture recognition (Mediapipe) are also embedded into the game.
 
 Features: 
