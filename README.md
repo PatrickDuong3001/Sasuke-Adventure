@@ -2,8 +2,8 @@
 This game is developed in Python. The simple AI for NPC characters and hand gesture recognition (Mediapipe) are also embedded into the game.
 
 Features: 
-- A simple AI for NPC to chase the player
-- A simple AI to detect the user's handsigns to control Sasuke. 
+- An AI for NPC to chase and attack the player
+- An AI to detect the user's handsigns via webcam to control Sasuke
 - Music + Visuals + Score Tracker system 
 - Health and Mana bars 
 
