@@ -8,7 +8,7 @@
 * An AI to detect the user's handsigns via webcam to control Sasuke
 * Music + Visuals + Score Tracker system 
 * Health and Mana system 
-## How to play
+## How to Play
 * Open the game '.exe' file
 * Start the game
 * Use W, A, S, D to control Sasuke's movements
