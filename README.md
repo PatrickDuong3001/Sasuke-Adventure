@@ -20,3 +20,25 @@
   * If a valid sequence of handsigns is detected, Sasuke will perform Jutsu (Katon or Chidori)
   * If the sequence is invalid, the screen will display an 'X' symbol
   * If you want to abandone the sequence midway, click C to delete the sequence. Then click C again to show new sequence of handsigns.
+## Valid Handsigns
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/Handsigns%20Guide.PNG)
+## In-game Screenshots
+**1. Main Menu**
+
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/Intro%20screen.PNG)
+
+**2. NPC chases player**
+
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/NPC%20chases%20player.PNG)
+
+**3. NPC attacks and incorrect handsigns detected**
+
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/NPC%20attacks%20and%20invalid%20handsigns.PNG)
+
+**4. Player performs Katon jutsu**
+
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/Katon%20image.PNG)
+
+**5. End-game screen when the player beats all enemies**
+
+![Alt_text](https://github.com/PatrickDuong3001/Sasuke-Adventure/blob/master/End%20game%20screen%20when%20win.PNG)
