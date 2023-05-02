@@ -3,6 +3,8 @@
 * Naruto is my favorite animation, and Sasuke is my favorite character. 
 * When I was small, I always imagined myself being Sasuke and did some silly handsigns just to release the cool jutsus as Sasuke did.
 * To "become" Sasuke, I decided to create my own pixelated game where I would be Sasuke and performed some silly handsigns to release awesome jutsus.
+## Showcase
+[![Sasuke](https://img.youtube.com/vi/aQj9ly43pXw/0.jpg)](https://youtu.be/aQj9ly43pXw)
 ## Features 
 * An AI for NPC to chase and attack the player
 * An AI to detect the user's handsigns via webcam to control Sasuke
